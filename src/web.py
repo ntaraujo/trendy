@@ -27,12 +27,12 @@ class Web():
         if len(wh_now) > len(wh_then):
             return set(wh_now).difference(set(wh_then)).pop()
     
-    def access_totvs(self):
+    def totvs_access(self):
         msg("Acessando TOTVS")
 
         self.driver.get("https://totvs.grendene.com.br/josso/signon/login.do")
     
-    def login_totvs(self, username="rep_trendy", password="SENHA_TOTVS", domain="gra_sid"):
+    def totvs_login(self, username="rep_trendy", password="SENHA_TOTVS", domain="gra_sid"):
         msg("Fazendo login TOTVS")
         from selenium.webdriver.common.by import By
         from selenium.webdriver.support import expected_conditions
@@ -50,7 +50,7 @@ class Web():
 
         self.totvs_logged = True
     
-    def consulta_pedidos(self):
+    def totvs_fav_pedidos(self):
         msg('Acessando a Consulta de "Pedidos do Cliente - WEB"')
 
         from selenium.webdriver.support.wait import WebDriverWait
@@ -69,7 +69,7 @@ class Web():
         self.driver.switch_to.window(self.vars["win720"])
         self.driver.switch_to.frame(1)
     
-    def pedidos_clientes_centralizador(self, cod_cliente, prev_emb, implatacacao_ini="16022000"):
+    def totvs_fav_pedidos_fill(self, cod_cliente, prev_emb, implatacacao_ini="16022000"):
         from selenium.webdriver.support.wait import WebDriverWait
         from selenium.webdriver.common.by import By
         from selenium.webdriver.support import expected_conditions
@@ -87,11 +87,20 @@ class Web():
         dropdown = self.driver.find_element(By.NAME, "w_status")
         dropdown.find_element(By.XPATH, "//option[. = 'Todos']").click()
         self.driver.find_element(By.NAME, "I11").click()
+    
+    def totvs_fav_pedidos_table(self):
+        from lxml.etree import HTML
+
+        table_list = HTML(self.driver.find_element_by_xpath("/html/body/form/table[3]/tbody").get_attribute('innerHTML'))[0]
+        return [[col.text for col in line] for line in table_list]
 
 if __name__ == '__main__':
     web = Web()
     web.open()
-    web.access_totvs()
-    web.login_totvs()
-    web.consulta_pedidos()
-    web.pedidos_clientes_centralizador("1031462", "03032021")
+    web.totvs_access()
+    web.totvs_login()
+    web.totvs_fav_pedidos()
+    web.totvs_fav_pedidos_fill("1031462", "03032021")
+    from time import sleep
+    sleep(2)
+    print(web.totvs_fav_pedidos_table())
