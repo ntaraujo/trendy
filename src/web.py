@@ -28,12 +28,12 @@ class Web():
             return set(wh_now).difference(set(wh_then)).pop()
     
     def totvs_access(self):
-        msg("Acessando TOTVS")
+        msg("Acessando o TOTVS")
 
         self.driver.get("https://totvs.grendene.com.br/josso/signon/login.do")
     
     def totvs_login(self, username="rep_trendy", password="Comunidade15", domain="gra_sid"):
-        msg("Fazendo login TOTVS")
+        msg("Fazendo login no TOTVS")
         from selenium.webdriver.common.by import By
         from selenium.webdriver.support import expected_conditions
         from selenium.webdriver.support.wait import WebDriverWait
@@ -51,7 +51,7 @@ class Web():
         self.totvs_logged = True
     
     def totvs_fav_pedidos(self):
-        msg('Acessando a Consulta de "Pedidos do Cliente - WEB"')
+        msg('Acessando a consulta de "Pedidos do Cliente - WEB"')
 
         from selenium.webdriver.support.wait import WebDriverWait
         from selenium.webdriver.common.by import By
@@ -70,6 +70,7 @@ class Web():
         self.driver.switch_to.frame(1)
     
     def totvs_fav_pedidos_fill(self, cod_cliente, prev_emb, implatacacao_ini="16022000"):
+        msg('Preenchendo dados da consulta de "Pedidos do Cliente - WEB"')
         from selenium.webdriver.support.wait import WebDriverWait
         from selenium.webdriver.common.by import By
         from selenium.webdriver.support import expected_conditions
@@ -89,6 +90,8 @@ class Web():
         self.driver.find_element(By.NAME, "I11").click()
     
     def totvs_fav_pedidos_table(self):
+        msg('Coletando a tabela da consulta de "Pedidos do Cliente - WEB"')
+
         from lxml.etree import HTML
 
         table_list = HTML(self.driver.find_element_by_xpath("/html/body/form/table[3]/tbody").get_attribute('innerHTML'))[0]
