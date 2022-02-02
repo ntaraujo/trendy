@@ -12,7 +12,7 @@ class Excel():
         import xlwings as xw
         from os import path
 
-        self.macros_file = xw.Book(path.abspath(path.join(path.dirname(__file__), "macros.xlsb")))
+        self.macros_file = xw.Book(path.abspath(path.join(path.dirname(__file__), "macros-trendy.xlsb")))
     
     def open(self, path=None):
         if path is None:
@@ -42,7 +42,37 @@ class Excel():
         if used.value is None:
             used.value = cells
         else:
-            used.offset(used.shape[0]).value = cells
+            self.file.sheets.active.range((used.last_cell.row+1, 1)).value = cells
+    
+    def back_range(self, rows, columns):
+        used = self.file.sheets.active.used_range
+        bottom_left = self.file.sheets.active.range((used.last_cell.row, 1))
+        top_right = bottom_left.offset(-rows+1, columns-1)
+        return self.file.sheets.active.range(bottom_left.address + ":" + top_right.address)
+
+    @staticmethod
+    def merge_across(cells):
+        cells.merge(across=True)
+
+    @staticmethod
+    def bold(cells):
+        cells.font.bold = True
+    
+    def center(self, cells):
+        cells.select()
+        self.run("center_selected")
+
+    
+    @staticmethod
+    def color(cells, R, G, B):
+        cells.font.color = (R, G, B)
+    
+    @staticmethod
+    def all_borders(cells):
+        rng = cells.xl_range
+        for border_id in range(7,13):
+            rng.Borders(border_id).LineStyle=1
+            rng.Borders(border_id).Weight=2
     
     def new_sheet(self, name=None):
         self.file.sheets.add(name, after=self.file.sheets.active)
