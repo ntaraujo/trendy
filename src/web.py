@@ -95,7 +95,27 @@ class Web():
         from lxml.etree import HTML
 
         table_list = HTML(self.driver.find_element_by_xpath("/html/body/form/table[3]/tbody").get_attribute('innerHTML'))[0]
-        return [[col.text for col in line] for line in table_list]
+        return [[col.text or col[0].text for col in line] for line in table_list]
+    
+    def totvs_fav_pedidos_next_page(self):
+        from selenium.webdriver.common.by import By
+
+        element = self.driver.find_element(By.CSS_SELECTOR, "td:nth-child(2) > a:nth-child(1) > img")
+        if element.is_enabled() and element.get_attribute('src') == "https://totvs-webspeed.grendene.com.br/ems20web/wimages/ii-nex.gif":
+            element.click()
+            return True
+        else:
+            return False
+    
+    def totvs_fav_pedidos_complete_table(self):
+        from time import sleep
+
+        sleep(3)
+        table = self.totvs_fav_pedidos_table()
+        while self.totvs_fav_pedidos_next_page():
+            sleep(3)
+            table += self.totvs_fav_pedidos_complete_table()[1:]
+        return table
 
 if __name__ == '__main__':
     web = Web()
@@ -103,7 +123,5 @@ if __name__ == '__main__':
     web.totvs_access()
     web.totvs_login()
     web.totvs_fav_pedidos()
-    web.totvs_fav_pedidos_fill("1031462", "03032021")
-    from time import sleep
-    sleep(2)
-    print(web.totvs_fav_pedidos_table())
+    web.totvs_fav_pedidos_fill("1000595", "03012022")
+    print(web.totvs_fav_pedidos_complete_table())
