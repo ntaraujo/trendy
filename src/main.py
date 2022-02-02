@@ -31,15 +31,27 @@ def posicao(cod_cliente, nome_cliente, prevs_emb, implantacao_ini):
     web.totvs_fav_pedidos()
 
     excel.insert(nome_cliente)
+    inserted = excel.back_range(1, 9)
+    excel.bold(inserted)
+    excel.center(inserted)
+    excel.color(inserted, 255, 0, 0)
+    excel.merge_across(inserted)
 
     for prev_emb in prevs_emb:
         web.totvs_fav_pedidos_fill(cod_cliente, prev_emb, implantacao_ini)
         table = posicao_table(web.totvs_fav_pedidos_complete_table())
 
         excel.insert([[None],["PEDIDO " + capitalized_month(simple_to_datetime(prev_emb))]])
+        inserted = excel.back_range(2, 9)
+        excel.bold(inserted)
+        excel.center(inserted)
+        excel.merge_across(inserted)
         excel.insert(table)
+    
+    excel.run("posicao_general_format")
 
 def posicoes(cods_clientes, nomes_clientes, prevs_emb, implantacao_ini, file_path=None):
+    excel.open_macros()
     excel.open(file_path)
     # excel.open_macros()
 
