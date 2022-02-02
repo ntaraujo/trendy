@@ -3,6 +3,7 @@ from utils import msg
 class Web():
     def __init__(self):
         self.totvs_logged = False
+        self.opened = False
         self.vars = {}
 
     def open(self):
@@ -13,6 +14,8 @@ class Web():
 
         self.driver = webdriver.Chrome(ChromeDriverManager().install())
         self.driver.set_window_size(1280, 773)
+
+        self.opened = True
     
     def close(self):
         msg("Fechando o navegador")
@@ -69,7 +72,7 @@ class Web():
         self.driver.switch_to.window(self.vars["win720"])
         self.driver.switch_to.frame(1)
     
-    def totvs_fav_pedidos_fill(self, cod_cliente, prev_emb, implatacacao_ini="16022000"):
+    def totvs_fav_pedidos_fill(self, cod_cliente, prev_emb, implatacacao_ini):
         msg('Preenchendo dados da consulta de "Pedidos do Cliente - WEB"')
         from selenium.webdriver.support.wait import WebDriverWait
         from selenium.webdriver.common.by import By
@@ -123,5 +126,5 @@ if __name__ == '__main__':
     web.totvs_access()
     web.totvs_login()
     web.totvs_fav_pedidos()
-    web.totvs_fav_pedidos_fill("1000595", "03012022")
+    web.totvs_fav_pedidos_fill("1000595", "03012022", "16022000")
     print(web.totvs_fav_pedidos_complete_table())
