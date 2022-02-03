@@ -67,13 +67,6 @@ class Excel():
     def color(cells, R, G, B):
         cells.font.color = (R, G, B)
     
-    @staticmethod
-    def all_borders(cells):
-        rng = cells.xl_range
-        for border_id in range(7,13):
-            rng.Borders(border_id).LineStyle=1
-            rng.Borders(border_id).Weight=2
-    
     def new_sheet(self, name=None):
         self.file.sheets.add(name, after=self.file.sheets.active)
     
