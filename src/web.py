@@ -32,6 +32,21 @@ class Web():
         if len(wh_now) > len(wh_then):
             return set(wh_now).difference(set(wh_then)).pop()
     
+    def wait_disappear(self, by, what):
+        from selenium.webdriver.support import expected_conditions
+        from selenium.webdriver.support.wait import WebDriverWait
+        from selenium.common.exceptions import NoSuchElementException, TimeoutException
+
+        try:
+            WebDriverWait(self.driver, 10).until(expected_conditions.presence_of_element_located((by, what)))
+        except TimeoutException:
+            return
+        try:
+            WebDriverWait(self.driver, 120).until(expected_conditions.staleness_of(self.driver.find_element(by, what)))
+        except NoSuchElementException:
+            pass
+
+    
     def totvs_access(self):
         msg("Acessando o TOTVS")
 
@@ -49,6 +64,7 @@ class Web():
         self.driver.find_element(By.ID, "txtUsername").click()
         self.driver.find_element(By.ID, "txtUsername").send_keys(username)
         self.driver.find_element(By.ID, "chkDomain").click()
+        WebDriverWait(self.driver, 30).until(expected_conditions.element_to_be_clickable((By.ID, "txtDomain")))
         self.driver.find_element(By.ID, "txtDomain").send_keys(domain)
         self.driver.find_element(By.ID, "txtPassword").click()
         self.driver.find_element(By.ID, "txtPassword").send_keys(password)
@@ -63,7 +79,9 @@ class Web():
         from selenium.webdriver.common.by import By
         from selenium.webdriver.support import expected_conditions
 
-        WebDriverWait(self.driver, 60).until(expected_conditions.element_to_be_clickable((By.CSS_SELECTOR, ".btn-selector-light:nth-child(3)")))
+        self.wait_disappear(By.ID, "loading-screen")
+
+        WebDriverWait(self.driver, 90).until(expected_conditions.element_to_be_clickable((By.CSS_SELECTOR, ".btn-selector-light:nth-child(3)")))
         self.driver.find_element(By.CSS_SELECTOR, ".btn-selector-light:nth-child(3)").click()
         WebDriverWait(self.driver, 30).until(expected_conditions.element_to_be_clickable((By.CSS_SELECTOR, ".ng-scope:nth-child(18) > .col-lg-5")))
         self.driver.find_element(By.CSS_SELECTOR, ".ng-scope:nth-child(18) > .col-lg-5").click()
@@ -93,8 +111,11 @@ class Web():
         self.driver.find_element(By.NAME, "w_prev_emb").send_keys(prev_emb)
         self.driver.find_element(By.NAME, "w_status").click()
         dropdown = self.driver.find_element(By.NAME, "w_status")
+        WebDriverWait(dropdown, 30).until(expected_conditions.element_to_be_clickable((By.XPATH, "//option[. = 'Todos']")))
         dropdown.find_element(By.XPATH, "//option[. = 'Todos']").click()
         self.driver.find_element(By.NAME, "I11").click()
+        
+        self.wait_disappear(By.ID, "janelaTudo")
     
     def totvs_fav_pedidos_table(self):
         msg("Coletando uma tabela")
@@ -108,10 +129,20 @@ class Web():
         msg("Checando se há outra página")
 
         from selenium.webdriver.common.by import By
+        from selenium.common.exceptions import NoSuchElementException
+        from selenium.webdriver.support.wait import WebDriverWait
+        from selenium.webdriver.support import expected_conditions
 
-        element = self.driver.find_element(By.CSS_SELECTOR, "td:nth-child(2) > a:nth-child(1) > img")
+        try:
+            element = self.driver.find_element(By.CSS_SELECTOR, "td:nth-child(2) > a:nth-child(1) > img")
+        except NoSuchElementException:
+            return False
+
         if element.is_enabled() and element.get_attribute('src') == "https://totvs-webspeed.grendene.com.br/ems20web/wimages/ii-nex.gif":
             element.click()
+
+            self.wait_disappear(By.ID, "janelaTudo")
+
             return True
         else:
             return False
