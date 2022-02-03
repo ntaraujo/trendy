@@ -29,7 +29,11 @@ class Excel():
     
     def close(self):
         if self.path is not None:
+            msg("Salvando e fechando o arquivo")
+
             self.file.save()
+        else:
+            msg("Fechando o arquivo")
         self.file.close()
     
     def run(self, macro, *args, **kwargs):
@@ -38,6 +42,8 @@ class Excel():
         return self.macros_file.macro(macro)(*args, **kwargs)
     
     def insert(self, cells):
+        msg("Inserindo linhas")
+
         used = self.file.sheets.active.used_range
         if used.value is None:
             used.value = cells
@@ -45,6 +51,8 @@ class Excel():
             self.file.sheets.active.range((used.last_cell.row+1, 1)).value = cells
     
     def back_range(self, rows, columns):
+        msg("Ações nas últimas linhas")
+
         used = self.file.sheets.active.used_range
         bottom_left = self.file.sheets.active.range((used.last_cell.row, 1))
         top_right = bottom_left.offset(-rows+1, columns-1)
@@ -52,25 +60,37 @@ class Excel():
 
     @staticmethod
     def merge_across(cells):
+        msg("Células mescladas")
+
         cells.merge(across=True)
 
     @staticmethod
     def bold(cells):
+        msg("Células em negrito")
+
         cells.font.bold = True
     
     def center(self, cells):
+        msg("Células centralizadas")
+
         cells.select()
         self.run("center_selected")
 
     
     @staticmethod
     def color(cells, R, G, B):
+        msg("Células com fonte colorida")
+
         cells.font.color = (R, G, B)
     
     def new_sheet(self, name=None):
+        msg("Adicionando nova planilha")
+
         self.file.sheets.add(name, after=self.file.sheets.active)
     
     def save(self, file_path=None):
+        msg("Salvando arquivo")
+
         self.file.save(file_path)
 
 if __name__ == "__main__":

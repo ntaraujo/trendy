@@ -22,7 +22,9 @@ class Web():
 
         self.driver.quit()
   
-    def wait_for_window(self, timeout = 2):
+    def wait_for_window(self, timeout=2):
+        msg("Aguardando nova janela")
+
         from time import sleep
         sleep(round(timeout / 1000))
         wh_now = self.driver.window_handles
@@ -36,7 +38,8 @@ class Web():
         self.driver.get("https://totvs.grendene.com.br/josso/signon/login.do")
     
     def totvs_login(self, username="rep_trendy", password="Comunidade15", domain="gra_sid"):
-        msg("Fazendo login no TOTVS")
+        msg("Fazendo login")
+
         from selenium.webdriver.common.by import By
         from selenium.webdriver.support import expected_conditions
         from selenium.webdriver.support.wait import WebDriverWait
@@ -73,7 +76,8 @@ class Web():
         self.driver.switch_to.frame(1)
     
     def totvs_fav_pedidos_fill(self, cod_cliente, prev_emb, implatacacao_ini):
-        msg('Preenchendo dados da consulta de "Pedidos do Cliente - WEB"')
+        msg("Preenchendo os dados necessários")
+
         from selenium.webdriver.support.wait import WebDriverWait
         from selenium.webdriver.common.by import By
         from selenium.webdriver.support import expected_conditions
@@ -93,7 +97,7 @@ class Web():
         self.driver.find_element(By.NAME, "I11").click()
     
     def totvs_fav_pedidos_table(self):
-        msg('Coletando a tabela da consulta de "Pedidos do Cliente - WEB"')
+        msg("Coletando uma tabela")
 
         from lxml.etree import HTML
 
@@ -101,6 +105,8 @@ class Web():
         return [[col.text or col[0].text for col in line] for line in table_list]
     
     def totvs_fav_pedidos_next_page(self):
+        msg("Checando se há outra página")
+
         from selenium.webdriver.common.by import By
 
         element = self.driver.find_element(By.CSS_SELECTOR, "td:nth-child(2) > a:nth-child(1) > img")
@@ -111,6 +117,8 @@ class Web():
             return False
     
     def totvs_fav_pedidos_complete_table(self):
+        msg("Preparando para coletar todas as tabelas da consulta")
+
         from time import sleep
 
         sleep(3)

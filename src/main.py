@@ -1,16 +1,19 @@
 from gooey import Gooey, GooeyParser, local_resource_path
 from web import Web
 from excel import Excel
+from utils import msg
 
 web = Web()
 excel = Excel()
 
 @Gooey(language="gooey-lang", program_name="Trendy", image_dir=local_resource_path("gooey-images"), language_dir=local_resource_path(""), navigation="TABBED", sidebar_title="Ações")
 def main():
-    parser = GooeyParser(description="Aplicativo de automação para planilhas e relatórios")
+    parser = GooeyParser(description="Aplicativo de automação com planilhas e sistemas online")
     parser.parse_args()
 
 def posicao_table(complete_table):
+    msg("Filtrando tabela")
+
     table = [['Pedido', 'Status', 'Est', 'NF', 'Dt Saída', 'Modelo', 'Descrição', 'Qt Pares', 'Nr Ordem'], ['TOTAL', '\xa0', '\xa0', '\xa0', '\xa0', '\xa0', '\xa0', None, '\xa0']]
     count = 0
     for line in complete_table[2:]:
@@ -21,6 +24,8 @@ def posicao_table(complete_table):
     return table
 
 def posicao(cod_cliente, nome_cliente, prevs_emb, implantacao_ini):
+    msg('Construindo a "posição" de uma loja')
+
     from utils import capitalized_month, simple_to_datetime
 
     if not web.opened:
@@ -51,6 +56,8 @@ def posicao(cod_cliente, nome_cliente, prevs_emb, implantacao_ini):
     excel.run("posicao_general_format")
 
 def posicoes(cods_clientes, nomes_clientes, prevs_emb, implantacao_ini, file_path=None):
+    msg('Construindo as "posições" de uma rede')
+
     excel.open_macros()
     excel.open(file_path)
     # excel.open_macros()
