@@ -26,6 +26,8 @@ class Excel():
 
         self.file = xw.Book(path)
         self.path = path
+
+        self.file.activate()
     
     def close(self):
         if self.path is not None:
