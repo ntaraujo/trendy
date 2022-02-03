@@ -12,9 +12,8 @@ def main():
     parser.parse_args()
 
 class Posicao():
-
     def __init__(self, cods_clientes, nomes_clientes, prevs_emb, implantacao_ini, file_path=None):
-        msg('Construindo as "posições" de uma rede')
+        msg('Construindo a Posição da rede')
 
         excel.open_macros()
         excel.open(file_path)
@@ -27,10 +26,14 @@ class Posicao():
         excel.file.sheets[0].delete()
         
         # excel.save()
+    
+    @staticmethod
+    def filter_entries(text):
+        return text.splitlines()
 
     @staticmethod
     def filter_table(complete_table):
-        msg("Filtrando tabela")
+        msg("Filtrando tabelas")
 
         table = [['Pedido', 'Status', 'Est', 'NF', 'Dt Saída', 'Modelo', 'Descrição', 'Qt Pares', 'Nr Ordem'], ['TOTAL', '\xa0', '\xa0', '\xa0', '\xa0', '\xa0', '\xa0', None, '\xa0']]
         count = 0
@@ -42,7 +45,7 @@ class Posicao():
         return table
 
     def make_sheet(self, cod_cliente, nome_cliente, prevs_emb, implantacao_ini):
-        msg('Construindo a "posição" de uma loja')
+        msg(f'Construindo a Posição da loja "{nome_cliente}"')
 
         from utils import capitalized_month, simple_to_datetime
 
