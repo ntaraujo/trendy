@@ -15,6 +15,13 @@ class Posicao():
     def __init__(self, cods_clientes, nomes_clientes, prevs_emb, implantacao_ini):
         msg('Construindo a Posição da rede')
 
+        if not web.opened:
+            web.open()
+        web.totvs_access()
+        if not web.totvs_logged:
+            web.totvs_login()
+        web.totvs_fav_pedidos()
+
         excel.open_macros()
         excel.open()
 
@@ -41,13 +48,6 @@ class Posicao():
         msg(f'Construindo a Posição da loja "{nome_cliente}"')
 
         from utils import capitalized_month, simple_to_datetime
-
-        if not web.opened:
-            web.open()
-        web.totvs_access()
-        if not web.totvs_logged:
-            web.totvs_login()
-        web.totvs_fav_pedidos()
 
         excel.insert(nome_cliente)
         inserted = excel.back_range(1, 9)
