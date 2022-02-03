@@ -11,6 +11,9 @@ def simple_to_datetime(date):
 def datetime_to_simple(date):
     return date.strftime('%d%m%Y')
 
+def iso_to_simple(date):
+    return ''.join(date.split('-')[::-1])
+
 def capitalized_month(date):
     return date.strftime('%B').upper()
 
