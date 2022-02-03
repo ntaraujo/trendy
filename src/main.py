@@ -1,11 +1,11 @@
-from gooey import Gooey, GooeyParser
+from gooey import Gooey, GooeyParser, local_resource_path
 from web import Web
 from excel import Excel
 
 web = Web()
 excel = Excel()
 
-@Gooey(dump_build_config=True, program_name="Trendy")
+@Gooey(language="gooey-lang", program_name="Trendy", image_dir=local_resource_path("gooey-images"), language_dir=local_resource_path(""), navigation="TABBED", sidebar_title="Ações")
 def main():
     parser = GooeyParser(description="Aplicativo de automação para planilhas e relatórios")
     parser.parse_args()
