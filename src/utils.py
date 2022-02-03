@@ -17,5 +17,8 @@ def iso_to_simple(date):
 def capitalized_month(date):
     return date.strftime('%B').upper()
 
+def pasted_to_list(text):
+    return text.splitlines()
+
 if __name__ == '__main__':
     print(capitalized_month(simple_to_datetime('03033445')))
