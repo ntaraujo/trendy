@@ -88,6 +88,9 @@ class Excel():
     def new_sheet(self, name=None):
         msg("Adicionando nova planilha")
 
+        if name is not None and len(name) > 31:
+            name = name[:31]
+
         self.file.sheets.add(name, after=self.file.sheets.active)
     
     def save(self, file_path=None):
