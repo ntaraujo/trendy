@@ -35,7 +35,7 @@ class Web():
     def wait_disappear(self, by, what):
         from selenium.webdriver.support import expected_conditions
         from selenium.webdriver.support.wait import WebDriverWait
-        from selenium.common.exceptions import NoSuchElementException, TimeoutException
+        from selenium.common.exceptions import NoSuchElementException, TimeoutException, NoSuchWindowException
 
         try:
             WebDriverWait(self.driver, 10).until(expected_conditions.presence_of_element_located((by, what)))
@@ -43,7 +43,7 @@ class Web():
             return
         try:
             WebDriverWait(self.driver, 120).until(expected_conditions.staleness_of(self.driver.find_element(by, what)))
-        except NoSuchElementException:
+        except (NoSuchElementException, NoSuchWindowException):
             pass
 
     
