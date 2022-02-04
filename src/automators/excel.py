@@ -1,5 +1,12 @@
-from utils import msg
+from threading import local
 from gooey import local_resource_path
+
+if __name__ == '__main__':
+    from sys import path as sys_path
+    sys_path.insert(0, local_resource_path(""))
+
+from utils import msg
+print('IMPORTED')
 
 class Excel():
     def __init__(self):
