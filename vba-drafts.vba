@@ -66,3 +66,12 @@ Sub posicao_general_format()
     Selection.Columns.AutoFit
     ActiveWindow.DisplayGridlines = False
 End Sub
+
+"
+Não clique dentro dessa ou qualquer outra planilha enquanto o programa roda
+De outra forma, algumas ações serão realizadas fora da planilha desejada
+Mas se acontecer, você ainda pode clicar novamente na pasta em que o programa está trabalhando
+Nesse caso, não clique na área com as células, mas na janela
+Assim você não seleciona uma célula diferente da qual o programa está trabalhando
+Você pode minimizar essa pasta sem problemas. Só clique no botão de (-) da janela
+"
