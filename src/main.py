@@ -6,7 +6,7 @@ from utils import msg, pasted_to_list
 web = Web()
 excel = Excel()
 
-@Gooey(language="gooey-lang", program_name="Trendy", image_dir=local_resource_path("gooey-images"), language_dir=local_resource_path(""), navigation="TABBED", sidebar_title="Ações")
+@Gooey(language="gooey-lang", program_name="Trendy", image_dir=local_resource_path("gooey-images"), language_dir=local_resource_path(""), navigation="TABBED", sidebar_title="Ações", show_success_modal=False, show_sidebar=True)
 def main():
     parser = GooeyParser(description="Aplicativo de automação com planilhas e sistemas online")
     parser.parse_args()
@@ -71,6 +71,8 @@ class Posicao():
 
 if __name__ == '__main__':
     # main()
+    # exit()
+
     Posicao(
         pasted_to_list("""982745
 960091
