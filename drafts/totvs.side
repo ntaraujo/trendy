@@ -33,7 +33,7 @@
         ["xpath=//div[@id='login-panel']/div/div[2]/div/div[2]/div/form/div[2]/input", "xpath:idRelative"],
         ["xpath=//div[2]/input", "xpath:position"]
       ],
-      "value": "Comunidade15"
+      "value": "SENHA_TOTVS"
     }, {
       "id": "5cdf9b0f-a3df-41cc-abde-bb200919c4f6",
       "comment": "",
@@ -406,7 +406,7 @@
         ["xpath=//div[@id='login-panel']/div/div[2]/div/div[2]/div/form/div[2]/input", "xpath:idRelative"],
         ["xpath=//div[2]/input", "xpath:position"]
       ],
-      "value": "Comunidade15"
+      "value": "SENHA_TOTVS"
     }, {
       "id": "ca395757-4c4d-4961-9a0e-1ecdff945052",
       "comment": "",
@@ -577,7 +577,7 @@
         ["xpath=//div[@id='login-panel']/div/div[2]/div/div[2]/div/form/div[2]/input", "xpath:idRelative"],
         ["xpath=//div[2]/input", "xpath:position"]
       ],
-      "value": "Comunidade15"
+      "value": "SENHA_TOTVS"
     }, {
       "id": "1bf17c34-87e9-4e29-8581-28df000e4d5d",
       "comment": "",

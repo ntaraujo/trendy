@@ -1,4 +1,5 @@
 from utils import msg
+from gooey import local_resource_path
 
 class Excel():
     def __init__(self):
@@ -12,7 +13,7 @@ class Excel():
         import xlwings as xw
         from os import path
 
-        self.macros_file = xw.Book(path.abspath(path.join(path.dirname(__file__), "macros-trendy.xlsb")))
+        self.macros_file = xw.Book(local_resource_path("automators/macros-trendy.xlsb"))
     
     def open(self, path=None):
         if path is None:
