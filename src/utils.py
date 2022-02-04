@@ -20,5 +20,62 @@ def capitalized_month(date):
 def pasted_to_list(text):
     return text.splitlines()
 
+from gooey.python_bindings import argparse_to_json
+
+def action_to_json(action, widget, options):
+    dropdown_types = {'Listbox', 'Dropdown', 'Counter'}
+    if action.required:
+        # Text fields get a default check that user input is present
+        # and not just spaces, dropdown types get a simplified
+        # is-it-present style check
+        validator = ('user_input and not user_input.isspace()'
+                     if widget not in dropdown_types
+                     else 'user_input')
+        error_msg = 'Esse campo é obrigatório'
+    else:
+        # not required; do nothing;
+        validator = 'True'
+        error_msg = ''
+
+    base = argparse_to_json.merge(argparse_to_json.item_default, {
+        'validator': {
+            'type': 'ExpressionValidator',
+            'test': validator,
+            'message': error_msg
+        },
+    })
+
+    if (options.get(action.dest) or {}).get('initial_value') != None:
+        value = options[action.dest]['initial_value']
+        options[action.dest]['initial_value'] = argparse_to_json.handle_initial_values(action, widget, value)
+    default = argparse_to_json.handle_initial_values(action, widget, action.default)
+    if default == argparse_to_json.argparse.SUPPRESS:
+        default = None
+
+
+
+    final_options = argparse_to_json.merge(base, options.get(action.dest) or {})
+    argparse_to_json.validate_gooey_options(action, widget, final_options)
+
+    return {
+        'id': action.option_strings[0] if action.option_strings else action.dest,
+        'type': widget,
+        'cli_type': argparse_to_json.choose_cli_type(action),
+        'required': action.required,
+        'data': {
+            'display_name': action.metavar or action.dest,
+            'help': action.help,
+            'required': action.required,
+            'nargs': action.nargs or '',
+            'commands': action.option_strings,
+            'choices': list(map(str, action.choices)) if action.choices else [],
+            'default': default,
+            'dest': action.dest,
+        },
+        'options': final_options
+    }
+
+argparse_to_json.action_to_json = action_to_json
+
 if __name__ == '__main__':
     print(capitalized_month(simple_to_datetime('03033445')))
