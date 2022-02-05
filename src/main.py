@@ -15,7 +15,11 @@ excel = Excel()
     sidebar_title="Ações",
     show_success_modal=False,
     show_sidebar=True,
-    shutdown_signal=signal.CTRL_C_EVENT
+    shutdown_signal=signal.CTRL_C_EVENT,
+    advanced=True,
+    tabbed_groups=True,
+    requires_shell=False,
+    clear_before_run=True
     )
 def main():
     parser = GooeyParser(description="Aplicativo de automação com planilhas e sistemas online")
