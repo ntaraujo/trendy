@@ -89,5 +89,21 @@ def retry(func, times=3, wait=1):
         return func(*args, **kwargs)
     return new_func
 
+example_args = {
+    'Códigos': """969611
+1000560
+611379
+980420
+""",
+    'Nomes': """""",
+    'Datas': """03122021
+03012022
+03022022
+""",
+    'Senha*': "SENHA_TOTVS",
+    'Rede': 'diversa',
+    'Dinâmica': 'C:\\Users\\Nathan\\Downloads\\NOVA DINÂMICA.xlsx'
+    }
+
 if __name__ == '__main__':
     print(capitalized_month(simple_to_datetime('03033445')))
