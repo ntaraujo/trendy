@@ -77,5 +77,17 @@ def action_to_json(action, widget, options):
 
 argparse_to_json.action_to_json = action_to_json
 
+def retry(func, times=3, wait=1):
+    from time import sleep
+    def new_func(*args, **kwargs):
+        for _ in range(times):
+            try:
+                return func(*args, **kwargs)
+            except Exception as e:
+                msg(f"Erro suprimido. Tentando novamente. Mensagem:\n{e}")
+                sleep(wait)
+        return func(*args, **kwargs)
+    return new_func
+
 if __name__ == '__main__':
     print(capitalized_month(simple_to_datetime('03033445')))
