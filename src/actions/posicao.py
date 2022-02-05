@@ -6,22 +6,67 @@ if __name__ == '__main__':
 from utils import msg, pasted_to_list
 
 class Posicao():
-    def __init__(self, web, excel, cods_clientes, nomes_clientes, prevs_emb, implantacao_ini):
-        msg('Construindo a Posição da rede')
+    def __init__(self, args, web, excel):
+
+        self.args = args
+        self.web = web
+        self.excel = excel
+
+        self.cods_clientes = pasted_to_list(args['Códigos'] or '')
+        self.nomes_clientes = pasted_to_list(args['Nomes'] or '')
+
+        if not self.cods_clientes or not self.nomes_clientes:
+            for rede, nome_cliente, cod_cliente in excel.file_vertical_search(args['Rede'].upper(), args['Dinâmica'], 9, 9, 10, 11):
+                if cod_cliente is None or cod_cliente == '':
+                    msg(f'CLIENTE SEM CÓDIGO: "{rede}" --> "{nome_cliente}"')
+                    continue
+
+                msg(f'Cliente encontrado: "{rede}" --> "{nome_cliente}" --> "{cod_cliente}"')
+                self.cods_clientes.append(cod_cliente)
+                self.nomes_clientes.append(nome_cliente)
+
+        self.prevs_emb = pasted_to_list(self.args['Datas'] or '')
+        if not self.prevs_emb:
+            from datetime import datetime
+            from utils import datetime_to_simple
+
+            this_month = datetime.now().month
+            this_year = datetime.now().year
+            
+            for _ in range(3):
+                new_date = datetime_to_simple(datetime(this_year, this_month, 3))
+                msg(f'Data a ser procurada: {new_date}')
+                self.prevs_emb.append(new_date)
+                if this_month == 1:
+                    this_month = 12
+                    this_year -= 1
+                else:
+                    this_month -= 1
 
         if not web.opened:
             web.open()
         web.totvs_access()
         if not web.totvs_logged:
-            web.totvs_login()
+            password = args['Senha*']
+            web.totvs_login(password)
         web.totvs_fav_pedidos()
 
         excel.open_macros()
+
+        self.make_workbook()
+
+        web.close()
+    
+    def make_workbook(self):
+        msg('Construindo a Posição da rede')
+
+        args, web, excel = self.args, self.web, self.excel
+
         excel.open()
 
-        for cod_cliente, nome_cliente in zip(cods_clientes, nomes_clientes):
+        for cod_cliente, nome_cliente in zip(self.cods_clientes, self.nomes_clientes):
             excel.new_sheet(nome_cliente)
-            self.make_sheet(web, excel, cod_cliente, nome_cliente, prevs_emb, implantacao_ini)
+            self.make_sheet(cod_cliente, nome_cliente)
         
         excel.file.sheets[0].delete()
 
@@ -38,10 +83,13 @@ class Posicao():
         table[1][7] = count
         return table
 
-    def make_sheet(self, web, excel, cod_cliente, nome_cliente, prevs_emb, implantacao_ini):
+    def make_sheet(self, cod_cliente, nome_cliente):
         msg(f'Construindo a Posição da loja "{nome_cliente}"')
 
         from utils import capitalized_month, simple_to_datetime
+
+        excel = self.excel
+        web = self.web
 
         excel.insert(nome_cliente)
         inserted = excel.back_range(1, 9)
@@ -50,8 +98,8 @@ class Posicao():
         excel.color(inserted, 255, 0, 0)
         excel.merge_across(inserted)
 
-        for prev_emb in prevs_emb:
-            web.totvs_fav_pedidos_fill(cod_cliente, prev_emb, implantacao_ini)
+        for prev_emb in self.prevs_emb:
+            web.totvs_fav_pedidos_fill(cod_cliente, prev_emb, "01012000")
             table = self.filter_table(web.totvs_fav_pedidos_complete_table())
 
             excel.insert([[None],["PEDIDO " + capitalized_month(simple_to_datetime(prev_emb))]])
@@ -65,23 +113,10 @@ class Posicao():
 
 if __name__ == '__main__':
     from automators import web, excel
+    from utils import example_args
 
     Posicao(
+        example_args,
         web.Web(),
-        excel.Excel(),
-        pasted_to_list("""969611
-1000560
-611379
-980420
-"""),
-        pasted_to_list("""3 MENINAS (RUA) - LJ
-A CASA DAS 3 MENINAS (ABC) - ANETE
-A CASA DAS 3 MENINAS (PLAZA) - DEBORAH
-CLUBE MELISSA - GRAND PLAZA SANTO ANDRÉ
-"""),
-        pasted_to_list("""03122021
-03012022
-03022022
-"""),
-        "16022000"
+        excel.Excel()
         )

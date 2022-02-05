@@ -3,7 +3,7 @@ if __name__ == '__main__':
     from sys import path as sys_path
     sys_path.insert(0, local_resource_path(""))
 
-from utils import msg
+from utils import msg, retry
 
 class Web():
     def __init__(self):
@@ -56,8 +56,9 @@ class Web():
         msg("Acessando o TOTVS")
 
         self.driver.get("https://totvs.grendene.com.br/josso/signon/login.do")
-    
-    def totvs_login(self, username="rep_trendy", password="SENHA_TOTVS", domain="gra_sid"):
+
+    @retry
+    def totvs_login(self, password):
         msg("Fazendo login")
 
         from selenium.webdriver.common.by import By
@@ -67,24 +68,25 @@ class Web():
 
         WebDriverWait(self.driver, 30).until(expected_conditions.element_to_be_clickable((By.ID, "txtUsername")))
         self.driver.find_element(By.ID, "txtUsername").click()
-        self.driver.find_element(By.ID, "txtUsername").send_keys(username)
+        self.driver.find_element(By.ID, "txtUsername").send_keys("rep_trendy")
         self.driver.find_element(By.ID, "chkDomain").click()
         WebDriverWait(self.driver, 30).until(expected_conditions.element_to_be_clickable((By.ID, "txtDomain")))
-        self.driver.find_element(By.ID, "txtDomain").send_keys(domain)
+        self.driver.find_element(By.ID, "txtDomain").send_keys("gra_sid")
         self.driver.find_element(By.ID, "txtPassword").click()
         self.driver.find_element(By.ID, "txtPassword").send_keys(password)
         self.driver.find_element(By.ID, "txtPassword").send_keys(Keys.ENTER)
 
+        self.wait_disappear(By.ID, "loading-screen")
+
         self.totvs_logged = True
     
+    @retry
     def totvs_fav_pedidos(self):
         msg('Acessando a consulta de "Pedidos do Cliente - WEB"')
 
         from selenium.webdriver.support.wait import WebDriverWait
         from selenium.webdriver.common.by import By
         from selenium.webdriver.support import expected_conditions
-
-        self.wait_disappear(By.ID, "loading-screen")
 
         WebDriverWait(self.driver, 90).until(expected_conditions.element_to_be_clickable((By.CSS_SELECTOR, ".btn-selector-light:nth-child(3)")))
         self.driver.find_element(By.CSS_SELECTOR, ".btn-selector-light:nth-child(3)").click()
@@ -96,8 +98,11 @@ class Web():
         self.vars["win720"] = self.wait_for_window(5000)
         self.vars["root"] = self.driver.current_window_handle
         self.driver.switch_to.window(self.vars["win720"])
+        # TODO wait for frame
+        # WebDriverWait(self.driver, 30).until(expected_conditions.frame_to_be_available_and_switch_to_it(1))
         self.driver.switch_to.frame(1)
     
+    @retry
     def totvs_fav_pedidos_fill(self, cod_cliente, prev_emb, implatacacao_ini):
         msg("Preenchendo os dados necessários")
 
@@ -121,15 +126,30 @@ class Web():
         self.driver.find_element(By.NAME, "I11").click()
         
         self.wait_disappear(By.ID, "janelaTudo")
-    
+
+    @retry
     def totvs_fav_pedidos_table(self):
         msg("Coletando uma tabela")
 
         from lxml.etree import HTML
+        from selenium.webdriver.support.wait import WebDriverWait
+        from selenium.webdriver.common.by import By
+        from selenium.webdriver.support import expected_conditions
 
-        table_list = HTML(self.driver.find_element_by_xpath("/html/body/form/table[3]/tbody").get_attribute('innerHTML'))[0]
-        return [[col.text or col[0].text for col in line] for line in table_list]
+        WebDriverWait(self.driver, 30).until(
+            expected_conditions.element_to_be_clickable((By.XPATH, "/html/body/form/table[3]/tbody")))
+
+        parsed_table = HTML(self.driver.find_element_by_xpath("/html/body/form/table[3]/tbody").get_attribute('innerHTML'))[0]
+        table = []
+        wrong_cols = False
+        for line in parsed_table:
+            if len(line) != 17:
+                raise Exception(f"totvs_fav_pedidos has not the expected cols number at all lines")
+            table.append([col.text or col[0].text for col in line])
+
+        return table
     
+    @retry
     def totvs_fav_pedidos_next_page(self):
         msg("Checando se há outra página")
 
@@ -155,13 +175,9 @@ class Web():
     def totvs_fav_pedidos_complete_table(self):
         msg("Preparando para coletar todas as tabelas da consulta")
 
-        from time import sleep
-
-        sleep(3)
         table = self.totvs_fav_pedidos_table()
         while self.totvs_fav_pedidos_next_page():
-            sleep(3)
-            table += self.totvs_fav_pedidos_complete_table()[1:]
+            table += self.totvs_fav_pedidos_table()[1:]
         return table
 
 if __name__ == '__main__':
