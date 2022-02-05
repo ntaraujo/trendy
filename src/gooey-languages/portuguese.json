@@ -20,7 +20,7 @@
   "finished_msg": "Você pode realizar outra ação ou fechar o programa",
   "finished_title": "Finalizado",
   "open_file": "Abrir arquivo",
-  "optional_args_msg": "Opções Avançadas",
+  "optional_args_msg": "Campos Opcionais",
   "required_args_msg": "Campos Obrigatórios",
   "restart": "Refazer",
   "running_msg": "Aguarde enquanto a aplicação executa suas tarefas. \nIsto pode demorar alguns minutos",
