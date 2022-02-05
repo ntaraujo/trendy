@@ -104,6 +104,18 @@ class Excel():
         msg("Salvando arquivo")
 
         self.file.save(file_path)
+    
+    @staticmethod
+    def file_vertical_search(value, file_path, lookup_col, *return_cols):
+        msg(f'Procurando "{value}" em "{file_path}"')
+        from openpyxl import load_workbook
+
+        ws = load_workbook(file_path).active
+        for row in ws.values:
+            if row is None:
+                return
+            if value in (row[lookup_col-1] or ''):
+                yield [row[return_col-1] for return_col in return_cols]
 
 if __name__ == "__main__":
     excel = Excel()
