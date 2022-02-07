@@ -71,7 +71,8 @@ def main():
             action(args, web, excel)
         except Exception as e:
             # uncomment when packaging
-            # web.close()
+            if web.opened:
+                web.close()
             raise e
 
     if args['action'] == 'Posição':
