@@ -14,11 +14,11 @@ class Posicao:
         self.web = web
         self.excel = excel
 
-        self.cods_clientes = pasted_to_list(args['Códigos'] or '')
-        self.nomes_clientes = pasted_to_list(args['Nomes'] or '')
+        self.cods_clientes = pasted_to_list(args['cods_cliente'] or '')
+        self.nomes_clientes = pasted_to_list(args['nomes_cliente'] or '')
 
         if not self.cods_clientes or not self.nomes_clientes:
-            for rede, nome_cliente, cod_cliente in excel.file_vertical_search(args['Rede'].upper(), args['Dinâmica'], 9,
+            for rede, nome_cliente, cod_cliente in excel.file_vertical_search(args['nome_rede'].upper(), args['dinamica'], 9,
                                                                               9, 10, 11):
                 if cod_cliente is None or cod_cliente == '':
                     msg(f'CLIENTE SEM CÓDIGO: "{rede}" --> "{nome_cliente}"')
@@ -28,7 +28,7 @@ class Posicao:
                 self.cods_clientes.append(cod_cliente)
                 self.nomes_clientes.append(nome_cliente)
 
-        self.prevs_emb = pasted_to_list(self.args['Datas'] or '')
+        self.prevs_emb = pasted_to_list(self.args['prevs_emb'] or '')
         if not self.prevs_emb:
             from datetime import datetime
             from utils import datetime_to_simple
@@ -50,7 +50,7 @@ class Posicao:
             web.open()
         web.totvs_access()
         if not web.totvs_logged:
-            password = args['Senha*']
+            password = args['senha_totvs']
             web.totvs_login(password)
         web.totvs_fav_pedidos()
 
