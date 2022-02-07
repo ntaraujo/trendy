@@ -16,10 +16,10 @@ excel = Excel()
     sidebar_title="Ações",
     show_success_modal=False,
     show_sidebar=True,
-    shutdown_signal=signal.CTRL_C_EVENT,
+    shutdown_signal=signal.SIGTERM,
     advanced=True,
     tabbed_groups=True,
-    requires_shell=False,
+    # requires_shell=False,  # not working on mac
     clear_before_run=True
 )
 def main():
