@@ -2,6 +2,7 @@ from gooey import Gooey, GooeyParser, local_resource_path
 from automators.web import Web
 from automators.excel import Excel
 import signal
+from utils import cache, save_cache, load_cache
 
 web = Web()
 excel = Excel()
@@ -26,25 +27,44 @@ def main():
     parser = GooeyParser(description="Aplicativo de automação com planilhas e sistemas online")
     subs = parser.add_subparsers(dest='action')
 
-    posicao_parser = subs.add_parser('Posição')
+    def argument(group, name, **kwargs):
+        cache_name = name.replace('--', '')
+        if cache_name in cache['default']:
+            default = cache['default'][cache_name]
+            if default == 'None':
+                default = None
+        else:
+            default = None
+        group.add_argument(name, default=default, **kwargs)
 
-    posicao_basic_group = posicao_parser.add_argument_group('Básico', gooey_options={'columns': 1})
-    posicao_basic_group.add_argument('Senha*', widget='PasswordField', help="A senha de acesso ao TOTVS")
-    posicao_basic_group.add_argument('--Rede',
+    def sub_parser(name):
+        return subs.add_parser(name)
+
+    def group(sub_parser, name, **kwargs):
+        return sub_parser.add_argument_group(name, **kwargs)
+
+    posicao_parser = sub_parser('Posição')
+    load_cache()
+
+    posicao_basic_group = group(posicao_parser, 'Básico', gooey_options={'columns': 1})
+    argument(posicao_basic_group, 'senha_totvs', widget='PasswordField', help="A senha de acesso ao TOTVS")
+    argument(posicao_basic_group, '--nome_rede',
                                      help="O nome da rede da qual o programa fará a posição. Ela será buscada no "
                                           "arquivo da dinâmica")
-    posicao_basic_group.add_argument('--Dinâmica', widget='FileChooser',
+    argument(posicao_basic_group, '--dinamica', widget='FileChooser',
                                      help='A dinâmica é o arquivo com os códigos e nomes de cada cliente')
 
-    posicao_advanced_group = posicao_parser.add_argument_group('Avançado')
-    posicao_advanced_group.add_argument('--Datas', widget='Textarea', gooey_options={'height': 100},
+    posicao_advanced_group = group(posicao_parser, 'Avançado')
+    argument(posicao_advanced_group, '--prevs_emb', widget='Textarea', gooey_options={'height': 100},
                                         help="As datas de previsão de embarque, separadas por ENTER")
-    posicao_advanced_group.add_argument('--Códigos', widget='Textarea', gooey_options={'height': 100},
+    argument(posicao_advanced_group, '--cods_cliente', widget='Textarea', gooey_options={'height': 100},
                                         help="Os códigos de cada cliente, separados por ENTER")
-    posicao_advanced_group.add_argument('--Nomes', widget='Textarea', gooey_options={'height': 100},
+    argument(posicao_advanced_group, '--nomes_cliente', widget='Textarea', gooey_options={'height': 100},
                                         help="Os respectivos nomes para cada cliente, separados por ENTER")
 
     args = parser.parse_args().__dict__
+    cache['default'] = {key: str(value) for key, value in args.items()}
+    save_cache()
 
     def run(action):
         try:
