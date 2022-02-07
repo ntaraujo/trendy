@@ -5,6 +5,7 @@ locale.setlocale(locale.LC_TIME, 'pt_BR.UTF-8')
 
 
 def msg(text):
+    text = text.encode('ascii', 'replace').decode()
     print(f'#### TRENDY ---- {text}')
 
 
@@ -111,9 +112,10 @@ example_args = {
 03022022
 """,
     'Senha*': "Comunidade15",
-    'Rede': 'diversa',
-    'Dinâmica': 'C:\\Users\\Nathan\\Downloads\\NOVA DINÂMICA.xlsx'
+    'Dinâmica': '/Users/macbookpro/Desktop/NOVA DINÂMICA.xlsx',
+    # 'Dinâmica': 'C:\\Users\\Nathan\\Downloads\\NOVA DINÂMICA.xlsx',
+    'Rede': 'diversa'
 }
 
 if __name__ == '__main__':
-    print(capitalized_month(simple_to_datetime('03033445')))
+    print(msg("nova dinâmica"))
