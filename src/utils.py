@@ -1,5 +1,10 @@
 import locale
 from gooey.python_bindings import argparse_to_json
+import appdirs
+import os
+import configparser
+import shutil
+from gooey import GooeyParser
 
 locale.setlocale(locale.LC_TIME, 'pt_BR.UTF-8')
 
@@ -99,22 +104,43 @@ def retry(func, times=3, wait=1):
 
     return new_func
 
+cache = configparser.ConfigParser()
+cache['default'] = {}
+cache_file_path = os.path.join(appdirs.user_cache_dir(), 'trendy_cache.ini')
+
+def save_cache():
+    with open(cache_file_path, 'w') as cache_file:
+        cache.write(cache_file)
+
+def load_cache():
+    if os.path.exists(cache_file_path):
+        cache.read(cache_file_path)
+
+data_dir_path = appdirs.site_data_dir()
+
+def save_data(file_name, file_path):
+    data_file_path = os.path.join(data_dir_path, file_name)
+    if not os.path.exists(data_file_path):
+        shutil.copy(file_path, data_file_path)
+
+def get_data_path(file_name):
+    return os.path.join(data_dir_path, file_name)
 
 example_args = {
-    'Códigos': """969611
+    'cods_cliente': """969611
 1000560
 611379
 980420
 """,
-    'Nomes': """""",
-    'Datas': """03122021
+    'nomes_cliente': """""",
+    'prevs_emb': """03122021
 03012022
 03022022
 """,
-    'Senha*': "Comunidade15",
-    'Dinâmica': '/Users/macbookpro/Desktop/NOVA DINÂMICA.xlsx',
-    # 'Dinâmica': 'C:\\Users\\Nathan\\Downloads\\NOVA DINÂMICA.xlsx',
-    'Rede': 'diversa'
+    'senha_totvs': "Comunidade15",
+    'dinamica': '/Users/macbookpro/Desktop/NOVA DINÂMICA.xlsx',
+    # 'dinamica': 'C:\\Users\\Nathan\\Downloads\\NOVA DINÂMICA.xlsx',
+    'nome_rede': 'diversa'
 }
 
 if __name__ == '__main__':
