@@ -37,8 +37,8 @@ def main():
     def sub_parser(name):
         return subs.add_parser(name)
 
-    def group(sub_parser, name, **kwargs):
-        return sub_parser.add_argument_group(name, **kwargs)
+    def group(parser, name, **kwargs):
+        return parser.add_argument_group(name, **kwargs)
 
     posicao_parser = sub_parser('Posição')
     load_cache()
