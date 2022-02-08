@@ -49,10 +49,10 @@ def main():
     posicao_basic_group = group(posicao_parser, 'Básico', gooey_options={'columns': 1})
     argument(posicao_basic_group, 'senha_totvs', widget='PasswordField', help="A senha de acesso ao TOTVS")
     argument(posicao_basic_group, '--nome_rede',
-                                     help="O nome da rede da qual o programa fará a posição. Ela será buscada no "
+                                        help="O nome da rede da qual o programa fará a posição. Ela será buscada no "
                                           "arquivo da dinâmica")
     argument(posicao_basic_group, '--dinamica', widget='FileChooser',
-                                     help='A dinâmica é o arquivo com os códigos e nomes de cada cliente')
+                                        help='A dinâmica é o arquivo com os códigos e nomes de cada cliente')
 
     posicao_advanced_group = group(posicao_parser, 'Avançado')
     argument(posicao_advanced_group, '--prevs_emb', widget='Textarea', gooey_options={'height': 100},
