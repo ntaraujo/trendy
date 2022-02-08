@@ -2,7 +2,7 @@ from gooey import Gooey, GooeyParser, local_resource_path
 from automators.web import Web
 from automators.excel import Excel
 import signal
-from utils import cache, save_cache, load_cache
+from utils import cache, save_cache, load_cache, msg, compiled
 
 web = Web()
 excel = Excel()
@@ -68,8 +68,9 @@ def main():
         try:
             action(args, web, excel)
         except Exception as e:
-            # uncomment when packaging
-            if web.opened:
+            if not web.opened:
+                msg("INFO: Navegador não foi aberto")
+            elif compiled():
                 web.close()
             raise e
 
