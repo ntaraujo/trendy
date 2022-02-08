@@ -7,6 +7,8 @@ from utils import cache, save_cache, load_cache, msg, compiled
 web = Web()
 excel = Excel()
 
+# debug helper
+# import os; os.chdir('/Users/macbookpro/Desktop/dev/trendy/src')
 
 @Gooey(
     language="portuguese",
