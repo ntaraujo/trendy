@@ -5,7 +5,7 @@ if __name__ == '__main__':
 
     sys_path.insert(0, local_resource_path(""))
 
-from utils import msg
+from utils import compiled, msg
 
 
 class Excel:
@@ -13,13 +13,25 @@ class Excel:
         self.macros_file = None
         self.file = None
         self.path = None
+    
+    @staticmethod
+    def aditional_app():
+        import xlwings as xw
+
+        if xw.apps.count < 2:
+            msg("Iniciando nova instância do Excel")
+            new_app = xw.App()
+            new_app.activate()
+            new_app.visible = True
 
     def open_macros(self):
         msg("Abrindo macros")
 
         import xlwings as xw
 
+        self.aditional_app()
         self.macros_file = xw.Book(local_resource_path("automators/macros-trendy.xlsb"))
+        self.macros_file.activate()
 
     def open(self, path=None):
         if path is None:
@@ -35,6 +47,7 @@ class Excel:
         self.path = path
 
         self.file.activate()
+        self.file.app.visible = not compiled()
 
     def close(self):
         if self.path is not None:
