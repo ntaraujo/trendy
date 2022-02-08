@@ -24,6 +24,8 @@ excel = Excel()
     clear_before_run=True
 )
 def main():
+    load_cache()
+
     parser = GooeyParser(description="Aplicativo de automação para planilhas e sistemas online")
     subs = parser.add_subparsers(dest='action')
 
@@ -41,7 +43,6 @@ def main():
         return parser.add_argument_group(name, **kwargs)
 
     posicao_parser = sub_parser('Posição')
-    load_cache()
 
     posicao_basic_group = group(posicao_parser, 'Básico', gooey_options={'columns': 1})
     argument(posicao_basic_group, 'senha_totvs', widget='PasswordField', help="A senha de acesso ao TOTVS")
