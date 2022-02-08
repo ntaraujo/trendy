@@ -2,6 +2,7 @@ import locale
 from gooey.python_bindings import argparse_to_json
 import appdirs
 import os
+import sys
 import configparser
 import shutil
 from gooey import GooeyParser
@@ -125,6 +126,9 @@ def save_data(file_name, file_path):
 
 def get_data_path(file_name):
     return os.path.join(data_dir_path, file_name)
+
+def compiled():
+    return getattr(sys, 'frozen', False)
 
 example_args = {
     'cods_cliente': """969611
