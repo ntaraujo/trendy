@@ -29,12 +29,9 @@ def main():
 
     def argument(group, name, **kwargs):
         cache_name = name.replace('--', '')
-        if cache_name in cache['default']:
-            default = cache['default'][cache_name]
-            if default == 'None':
+        default = cache['default'].get(cache_name, 'None')
+        if default == 'None':
                 default = None
-        else:
-            default = None
         group.add_argument(name, default=default, **kwargs)
 
     def sub_parser(name):
