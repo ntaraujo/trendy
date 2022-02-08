@@ -24,7 +24,7 @@ excel = Excel()
     clear_before_run=True
 )
 def main():
-    parser = GooeyParser(description="Aplicativo de automação com planilhas e sistemas online")
+    parser = GooeyParser(description="Aplicativo de automação para planilhas e sistemas online")
     subs = parser.add_subparsers(dest='action')
 
     def argument(group, name, **kwargs):
