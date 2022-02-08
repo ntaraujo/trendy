@@ -4,7 +4,7 @@ if __name__ == '__main__':
 
     sys_path.insert(0, local_resource_path(""))
 
-from utils import msg, retry
+from utils import msg, retry, compiled
 
 
 class Web:
@@ -20,7 +20,13 @@ class Web:
         from webdriver_manager.chrome import ChromeDriverManager
         from selenium import webdriver
 
-        self.driver = webdriver.Chrome(ChromeDriverManager().install())
+        if compiled():
+            options = webdriver.ChromeOptions()
+            options.add_argument("--headless")
+        else:
+            options = None
+
+        self.driver = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=options)
         self.driver.set_window_size(1280, 773)
 
         self.opened = True
