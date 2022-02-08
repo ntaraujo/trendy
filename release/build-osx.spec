@@ -1,7 +1,6 @@
 # -*- mode: python ; coding: utf-8 -*-
 
-from PyInstaller import compat
-
+from PyInstaller.building.toc_conversion import Tree
 from PyInstaller.building.api import EXE, PYZ
 from PyInstaller.building.build_main import Analysis
 from PyInstaller.building.osx import BUNDLE
@@ -15,12 +14,11 @@ a = Analysis(['../src/main.py'],
              runtime_hooks=None,
              )
 
-a.datas += Tree('../src', prefix='.')
+a.datas += Tree('../src', prefix='.', excludes=['main.py'])
 
 pyz = PYZ(a.pure)
 
 options = [('u', None, 'OPTION'), ('v', None, 'OPTION'), ('w', None, 'OPTION')]
-
 
 exe = EXE(pyz,
           a.scripts,
@@ -36,8 +34,10 @@ exe = EXE(pyz,
           icon='../src/gooey-images/program_icon.ico')
 
 info_plist = {'addition_prop': 'additional_value'}
+
 app = BUNDLE(exe,
              name='Trendy.app',
+             icon='../src/gooey-images/program_icon.ico',
              bundle_identifier=None,
              info_plist=info_plist
             )
