@@ -2,7 +2,7 @@ from gooey import Gooey, GooeyParser, local_resource_path
 from automators.web import Web
 from automators.excel import Excel
 import signal
-from utils import cache, save_cache, load_cache, msg, compiled, run_scheduled
+from utils import cache, save_cache, load_cache, msg, compiled, run_scheduled, log_file
 import codecs
 import sys
 
@@ -78,12 +78,21 @@ def main():
         try:
             action(args, web, excel)
         except Exception as e:
+            import traceback
+
             if not web.opened:
                 msg("INFO: Navegador não foi aberto")
             elif compiled:
+                web.print('last-error-trendy.png')
                 web.close()
-            run_scheduled()
-            raise e
+            try:
+                run_scheduled()
+            except Exception as e:
+                log_file.write(traceback.format_exc() + '\n')
+                raise e
+            else:
+                log_file.write(traceback.format_exc() + '\n')
+                raise e
 
     if args['action'] == 'Posição':
         from actions.posicao import Posicao

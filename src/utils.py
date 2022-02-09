@@ -6,12 +6,18 @@ import os
 import sys
 import configparser
 import shutil
+import traceback
+
+data_dir_path = appdirs.user_data_dir()
+
+log_file = open(os.path.join(data_dir_path, 'last-log-trendy.txt'), 'w')
 
 locale.setlocale(locale.LC_TIME, 'pt_BR.UTF-8')
 
 
 def msg(text):
     print(f'#### TRENDY ---- {text}')
+    log_file.write(text + '\n')
 
 
 def simple_to_datetime(date):
@@ -98,7 +104,7 @@ def retry(func, times=3, wait=1):
             try:
                 return func(*args, **kwargs)
             except Exception as e:
-                msg(f"Erro suprimido. Tentando novamente. Mensagem:\n{e}")
+                msg(f"Erro suprimido. Tentando novamente\n{traceback.format_exc()}")
                 sleep(wait)
         return func(*args, **kwargs)
 
@@ -118,9 +124,6 @@ def save_cache():
 def load_cache():
     if os.path.exists(cache_file_path):
         cache.read(cache_file_path)
-
-
-data_dir_path = appdirs.user_data_dir()
 
 
 def global_path(local_path, basename=None):

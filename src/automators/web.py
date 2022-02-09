@@ -38,6 +38,15 @@ class Web:
         msg("Fechando o navegador")
 
         self.driver.quit()
+    
+    def print(self, basename):
+        from Screenshot import Screenshot_Clipping
+        from utils import data_dir_path
+        from os import path
+
+        ss = Screenshot_Clipping.Screenshot()
+        ss.full_Screenshot(self.driver, save_path=data_dir_path , image_name=basename)
+        return path.join(data_dir_path, basename)
 
     def wait_for_window(self, timeout=2):
         msg("Aguardando nova janela")
@@ -59,7 +68,7 @@ class Web:
         except TimeoutException:
             return
         try:
-            WebDriverWait(self.driver, 120).until(expected_conditions.staleness_of(self.driver.find_element(by, what)))
+            WebDriverWait(self.driver, 30).until(expected_conditions.staleness_of(self.driver.find_element(by, what)))
         except (NoSuchElementException, NoSuchWindowException):
             pass
 
@@ -99,7 +108,7 @@ class Web:
         from selenium.webdriver.common.by import By
         from selenium.webdriver.support import expected_conditions
 
-        WebDriverWait(self.driver, 90).until(
+        WebDriverWait(self.driver, 30).until(
             expected_conditions.element_to_be_clickable((By.CSS_SELECTOR, ".btn-selector-light:nth-child(3)")))
         self.driver.find_element(By.CSS_SELECTOR, ".btn-selector-light:nth-child(3)").click()
         WebDriverWait(self.driver, 30).until(
