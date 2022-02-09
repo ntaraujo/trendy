@@ -17,8 +17,8 @@ class Posicao:
         self.nomes_clientes = pasted_to_list(self.args['nomes_cliente'] or '')
 
         if not self.cods_clientes or not self.nomes_clientes:
-            for rede, nome_cliente, cod_cliente in self.excel.file_vertical_search(self.args['nome_rede'].upper(), self.args['dinamica'], 9,
-                                                                              9, 10, 11):
+            for rede, nome_cliente, cod_cliente in self.excel.file_vertical_search(
+                    self.args['nome_rede'].upper(), self.args['dinamica'], 9, 9, 10, 11):
                 if cod_cliente is None or cod_cliente == '':
                     msg(f'CLIENTE SEM CÓDIGO: "{rede}" --> "{nome_cliente}"')
                     continue
@@ -88,7 +88,7 @@ class Posicao:
         msg(f'Construindo a Posição da loja "{nome_cliente}"')
 
         from utils import capitalized_month, simple_to_datetime
-        
+
         self.excel.insert(nome_cliente)
         inserted = self.excel.back_range(1, 9)
         self.excel.bold(inserted)
