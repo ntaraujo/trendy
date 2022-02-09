@@ -38,7 +38,7 @@ def capitalized_month(date):
 
 
 def pasted_to_list(text):
-    return text.splitlines()
+    return [line.strip() for line in text.splitlines() if line.strip()]
 
 
 def action_to_json(action, widget, options):

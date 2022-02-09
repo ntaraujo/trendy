@@ -72,7 +72,7 @@ def main():
 
     args = parser.parse_args().__dict__
     cache['default'] = {key: str(value) for key, value in args.items()}
-    args = {key: None if value == 'X' else value for key, value in args.items()}
+    args = {key: None if value == 'X' else value.strip() for key, value in args.items()}
     save_cache()
 
     def run(action):
