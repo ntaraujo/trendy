@@ -49,7 +49,7 @@ class Excel:
             self.app.books.open(path)
 
         self.file.activate()
-        self.file.app.visible = not compiled()
+        self.file.app.visible = not compiled
 
         self.path = path
 

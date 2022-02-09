@@ -131,8 +131,7 @@ def global_path(local_path, basename=None):
     return path
 
 
-def compiled():
-    return getattr(sys, 'frozen', False)
+compiled = getattr(sys, 'frozen', False)
 
 scheduled_call_queue = deque()
 running_scheduled = False

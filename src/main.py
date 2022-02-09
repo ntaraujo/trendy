@@ -80,7 +80,7 @@ def main():
         except Exception as e:
             if not web.opened:
                 msg("INFO: Navegador não foi aberto")
-            elif compiled():
+            elif compiled:
                 web.close()
             raise e
 
