@@ -20,11 +20,14 @@ class Web:
         from webdriver_manager.chrome import ChromeDriverManager
         from selenium import webdriver
 
+        options = webdriver.ChromeOptions()
+        options.add_argument('--ignore-certificate-errors')
+        options.add_argument('--allow-running-insecure-content')
+        options.add_argument('--allow-insecure-localhost')
+        options.add_argument('--unsafely-treat-insecure-origin-as-secure')
+
         if compiled():
-            options = webdriver.ChromeOptions()
             options.add_argument("--headless")
-        else:
-            options = None
 
         self.driver = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=options)
         self.driver.set_window_size(1280, 773)
