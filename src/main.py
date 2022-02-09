@@ -7,6 +7,7 @@ from utils import cache, save_cache, load_cache, msg, compiled
 web = Web()
 excel = Excel()
 
+
 # debug helper
 # import os; os.chdir('/Users/macbookpro/Desktop/dev/trendy/src')
 
@@ -31,36 +32,36 @@ def main():
     parser = GooeyParser(description="Aplicativo de automação para planilhas e sistemas online")
     subs = parser.add_subparsers(dest='action')
 
-    def argument(group, name, **kwargs):
+    def argument(group_, name, **kwargs):
         cache_name = name.replace('--', '')
         default = cache['default'].get(cache_name, 'None')
         if default == 'None':
-                default = None
-        group.add_argument(name, default=default, **kwargs)
+            default = None
+        group_.add_argument(name, default=default, **kwargs)
 
     def sub_parser(name):
         return subs.add_parser(name)
 
-    def group(parser, name, **kwargs):
-        return parser.add_argument_group(name, **kwargs)
+    def group(parser_, name, **kwargs):
+        return parser_.add_argument_group(name, **kwargs)
 
     posicao_parser = sub_parser('Posição')
 
     posicao_basic_group = group(posicao_parser, 'Básico', gooey_options={'columns': 1})
     argument(posicao_basic_group, 'senha_totvs', widget='PasswordField', help="A senha de acesso ao TOTVS")
     argument(posicao_basic_group, '--nome_rede',
-                                        help="O nome da rede da qual o programa fará a posição. Ela será buscada no "
-                                          "arquivo da dinâmica")
+             help="O nome da rede da qual o programa fará a posição. Ela será buscada no "
+                  "arquivo da dinâmica")
     argument(posicao_basic_group, '--dinamica', widget='FileChooser',
-                                        help='A dinâmica é o arquivo com os códigos e nomes de cada cliente')
+             help='A dinâmica é o arquivo com os códigos e nomes de cada cliente')
 
     posicao_advanced_group = group(posicao_parser, 'Avançado')
     argument(posicao_advanced_group, '--prevs_emb', widget='Textarea', gooey_options={'height': 100},
-                                        help="As datas de previsão de embarque, separadas por ENTER")
+             help="As datas de previsão de embarque, separadas por ENTER")
     argument(posicao_advanced_group, '--cods_cliente', widget='Textarea', gooey_options={'height': 100},
-                                        help="Os códigos de cada cliente, separados por ENTER")
+             help="Os códigos de cada cliente, separados por ENTER")
     argument(posicao_advanced_group, '--nomes_cliente', widget='Textarea', gooey_options={'height': 100},
-                                        help="Os respectivos nomes para cada cliente, separados por ENTER")
+             help="Os respectivos nomes para cada cliente, separados por ENTER")
 
     args = parser.parse_args().__dict__
     cache['default'] = {key: str(value) for key, value in args.items()}
