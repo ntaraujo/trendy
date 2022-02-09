@@ -33,16 +33,12 @@ class Excel:
     def open_macros(self):
         msg("Abrindo macros")
 
-        import xlwings as xw
-
         macros_path = global_path(local_resource_path("automators/macros-trendy.xlsb"))
         self.macros_file = self.app.books.open(macros_path)
         self.macros_file.activate()
 
     @scheduled
     def open(self, path=None):
-        import xlwings as xw
-
         if path is None:
             msg("Abrindo nova pasta do Excel")
             self.file = self.app.books.add()
