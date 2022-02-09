@@ -4,7 +4,7 @@ if __name__ == '__main__':
 
     sys_path.insert(0, local_resource_path(""))
 
-from utils import msg, pasted_to_list
+from utils import msg, pasted_to_list, run_scheduled
 
 
 class Posicao:
@@ -13,6 +13,7 @@ class Posicao:
         self.args = args
         self.web = web
         self.excel = excel
+        # TODO access like args.cods_cliente
         self.cods_clientes = pasted_to_list(self.args['cods_cliente'] or '')
         self.nomes_clientes = pasted_to_list(self.args['nomes_cliente'] or '')
 
@@ -58,6 +59,8 @@ class Posicao:
 
         self.make_workbook()
 
+        run_scheduled()
+
         web.close()
 
     def make_workbook(self):
@@ -69,7 +72,7 @@ class Posicao:
             self.excel.new_sheet(nome_cliente)
             self.make_sheet(cod_cliente, nome_cliente)
 
-        self.excel.file.sheets[0].delete()
+        self.excel.delete_sheet(0)
 
     @staticmethod
     def filter_table(complete_table):
@@ -91,21 +94,25 @@ class Posicao:
         from utils import capitalized_month, simple_to_datetime
 
         self.excel.insert(nome_cliente)
-        inserted = self.excel.back_range(1, 9)
-        self.excel.bold(inserted)
-        self.excel.center(inserted)
-        self.excel.color(inserted, 255, 0, 0)
-        self.excel.merge_across(inserted)
+        self.excel.on_back_range(
+            1, 9,
+            self.excel.bold,
+            self.excel.center,
+            (self.excel.color, (255, 0, 0)),
+            self.excel.merge_across
+        )
 
         for prev_emb in self.prevs_emb:
             self.web.totvs_fav_pedidos_fill(cod_cliente, prev_emb, "01012000")
             table = self.filter_table(self.web.totvs_fav_pedidos_complete_table())
 
             self.excel.insert([[None], ["PEDIDO " + capitalized_month(simple_to_datetime(prev_emb))]])
-            inserted = self.excel.back_range(2, 9)
-            self.excel.bold(inserted)
-            self.excel.center(inserted)
-            self.excel.merge_across(inserted)
+            self.excel.on_back_range(
+                2, 9,
+                self.excel.bold,
+                self.excel.center,
+                self.excel.merge_across
+            )
             self.excel.insert(table)
 
         self.excel.run("posicao_general_format")
