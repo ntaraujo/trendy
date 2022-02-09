@@ -5,7 +5,7 @@ if __name__ == '__main__':
 
     sys_path.insert(0, local_resource_path(""))
 
-from utils import compiled, msg
+from utils import compiled, msg, global_path
 
 
 class Excel:
@@ -13,41 +13,46 @@ class Excel:
         self.macros_file = None
         self.file = None
         self.path = None
+        self.app = None
     
-    @staticmethod
-    def aditional_app():
+    def open_app(self):
         import xlwings as xw
 
         if xw.apps.count < 2:
-            msg("Iniciando nova instância do Excel")
+            msg("Iniciando uma instância do Excel para uso do programa")
             new_app = xw.App()
             new_app.activate()
             new_app.visible = True
+            self.app = new_app
+        else:
+            pids = sorted(xw.apps.keys())
+            self.app = xw.apps[pids[-1]]
 
     def open_macros(self):
         msg("Abrindo macros")
 
         import xlwings as xw
 
-        self.aditional_app()
-        self.macros_file = xw.Book(local_resource_path("automators/macros-trendy.xlsb"))
+        macros_path = global_path(local_resource_path("automators/macros-trendy.xlsb"))
+        self.macros_file = self.app.books.open(macros_path)
         self.macros_file.activate()
 
     def open(self, path=None):
+        import xlwings as xw
+
         if path is None:
             msg("Abrindo nova pasta do Excel")
+            self.file = self.app.books.add()
         else:
             from os.path import abspath
             path = abspath(path)
             msg(f'Abrindo pasta do Excel em "{path}"')
-
-        import xlwings as xw
-
-        self.file = xw.Book(path)
-        self.path = path
+            self.app.books.open(path)
 
         self.file.activate()
         self.file.app.visible = not compiled()
+
+        self.path = path
 
     def close(self):
         if self.path is not None:
