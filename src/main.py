@@ -70,9 +70,9 @@ def main():
     argument(posicao_advanced_group, '--nomes_cliente', widget='Textarea', gooey_options={'height': 100},
              help="Os respectivos nomes para cada cliente, separados por ENTER")
 
-    args = parser.parse_args().__dict__
-    cache['default'] = {key: str(value) for key, value in args.items()}
-    args = {key: None if value == 'X' else value.strip() for key, value in args.items()}
+    args = parser.parse_args()
+    cache['default'] = {key: str(value) for key, value in args.__dict__.items()}
+    args.__dict__ = {key: None if value == 'X' else value.strip() for key, value in args.__dict__.items()}
     save_cache()
 
     def run(action):
@@ -95,7 +95,7 @@ def main():
                 log_file.write(traceback.format_exc() + '\n')
                 raise e
 
-    if args['action'] == 'Posição':
+    if args.action == 'Posição':
         from actions.posicao import Posicao
         run(Posicao)
 
