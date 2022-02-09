@@ -78,14 +78,17 @@ class Posicao:
     def filter_table(complete_table):
         msg("Filtrando tabelas")
 
-        table = [['Pedido', 'Status', 'Est', 'NF', 'Dt Saída', 'Modelo', 'Descrição', 'Qt Pares', 'Nr Ordem'],
-                 ['TOTAL', '\xa0', '\xa0', '\xa0', '\xa0', '\xa0', '\xa0', None, '\xa0']]
-        count = 0
+        table = [['Pedido', 'Status', 'Est', 'NF', 'Dt Saída', 'Modelo', 'Descrição', 'Qt Pares', 'Vl Líq', 'Nr Ordem'],
+                 ['TOTAL',  None,     None,  None, None,       None,     None,        None,       None,     None]]
+        qt_count = 0
+        vl_count = 0
         for line in complete_table[2:]:
             if "Cancelado" not in line[1]:
-                table.append([cell for index, cell in enumerate(line) if index not in (2, 4, 5, 6, 12, 14, 15, 16)])
-                count += int(line[11])
-        table[1][7] = count  # noqa
+                table.append([cell for index, cell in enumerate(line) if index not in (2, 4, 5, 6, 14, 15, 16)])
+                qt_count += int(line[11])
+                vl_count += float(line[12].replace('.', '').replace(',', '.'))
+        table[1][7] = qt_count  # noqa
+        table[1][8] = f'{vl_count:_.2f}'.replace('_', '.')  # noqa
         return table
 
     def make_sheet(self, cod_cliente, nome_cliente):
@@ -95,7 +98,7 @@ class Posicao:
 
         self.excel.insert(nome_cliente)
         self.excel.on_back_range(
-            1, 9,
+            1, 10,
             self.excel.bold,
             self.excel.center,
             (self.excel.color, (255, 0, 0)),
@@ -108,7 +111,7 @@ class Posicao:
 
             self.excel.insert([[None], ["PEDIDO " + capitalized_month(simple_to_datetime(prev_emb))]])
             self.excel.on_back_range(
-                2, 9,
+                2, 10,
                 self.excel.bold,
                 self.excel.center,
                 self.excel.merge_across
