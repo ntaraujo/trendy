@@ -36,7 +36,7 @@ excel = Excel()
 def main():
     load_cache()
 
-    parser = GooeyParser(description="Aplicativo de automação para planilhas e sistemas online")
+    parser = GooeyParser(description="Escreva um X nos campos que não devem ser usados")
     subs = parser.add_subparsers(dest='action')
 
     def argument(group_, name, **kwargs):
@@ -72,6 +72,7 @@ def main():
 
     args = parser.parse_args().__dict__
     cache['default'] = {key: str(value) for key, value in args.items()}
+    args = {key: None if value == 'X' else value for key, value in args.items()}
     save_cache()
 
     def run(action):
