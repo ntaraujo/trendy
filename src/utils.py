@@ -137,7 +137,7 @@ scheduled_call_queue = deque()
 running_scheduled = False
 
 def schedule(function, *args, **kwargs):
-    if running_scheduled:
+    if running_scheduled or not compiled:
         function(*args, **kwargs)
     else:
         scheduled_call_queue.append((function, args, kwargs))
