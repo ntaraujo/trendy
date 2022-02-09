@@ -1,3 +1,4 @@
+from collections import deque
 import locale
 from gooey.python_bindings import argparse_to_json
 import appdirs
@@ -133,6 +134,28 @@ def global_path(local_path, basename=None):
 
 def compiled():
     return getattr(sys, 'frozen', False)
+
+scheduled_call_queue = deque()
+running_scheduled = False
+
+def schedule(function, *args, **kwargs):
+    if running_scheduled:
+        function(*args, **kwargs)
+    else:
+        scheduled_call_queue.append((function, args, kwargs))
+
+def run_scheduled():
+    global running_scheduled
+    running_scheduled = True
+    for function, args, kwargs in scheduled_call_queue:
+        function(*args, **kwargs)
+    scheduled_call_queue.clear()
+    running_scheduled = False
+
+def scheduled(function):
+    def new_function(*args, **kwargs):
+        schedule(function, *args, **kwargs)
+    return new_function
 
 
 example_args = {

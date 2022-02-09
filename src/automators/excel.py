@@ -5,7 +5,7 @@ if __name__ == '__main__':
 
     sys_path.insert(0, local_resource_path(""))
 
-from utils import compiled, msg, global_path
+from utils import compiled, msg, global_path, scheduled
 
 
 class Excel:
@@ -15,6 +15,7 @@ class Excel:
         self.path = None
         self.app = None
     
+    @scheduled
     def open_app(self):
         import xlwings as xw
 
@@ -28,6 +29,7 @@ class Excel:
             pids = sorted(xw.apps.keys())
             self.app = xw.apps[pids[-1]]
 
+    @scheduled
     def open_macros(self):
         msg("Abrindo macros")
 
@@ -37,6 +39,7 @@ class Excel:
         self.macros_file = self.app.books.open(macros_path)
         self.macros_file.activate()
 
+    @scheduled
     def open(self, path=None):
         import xlwings as xw
 
@@ -54,6 +57,7 @@ class Excel:
 
         self.path = path
 
+    @scheduled
     def close(self):
         if self.path is not None:
             msg("Salvando e fechando o arquivo")
@@ -63,11 +67,13 @@ class Excel:
             msg("Fechando o arquivo")
         self.file.close()
 
+    @scheduled
     def run(self, macro, *args, **kwargs):
         msg(f'Executando a macro "{macro}"')
 
-        return self.macros_file.macro(macro)(*args, **kwargs)
+        self.macros_file.macro(macro)(*args, **kwargs)
 
+    @scheduled
     def insert(self, cells):
         msg("Inserindo linhas")
 
@@ -76,14 +82,6 @@ class Excel:
             used.value = cells
         else:
             self.file.sheets.active.range((used.last_cell.row + 1, 1)).value = cells
-
-    def back_range(self, rows, columns):
-        msg("Ações nas últimas linhas")
-
-        used = self.file.sheets.active.used_range
-        bottom_left = self.file.sheets.active.range((used.last_cell.row, 1))
-        top_right = bottom_left.offset(-rows + 1, columns - 1)
-        return self.file.sheets.active.range(bottom_left.address + ":" + top_right.address)
 
     @staticmethod
     def merge_across(cells):
@@ -97,6 +95,7 @@ class Excel:
 
         cells.font.bold = True
 
+    @scheduled
     def center(self, cells):
         msg("Células centralizadas")
 
@@ -109,6 +108,7 @@ class Excel:
 
         cells.font.color = (r, g, b)
 
+    @scheduled
     def new_sheet(self, name=None):
         msg("Adicionando nova planilha")
 
@@ -117,6 +117,7 @@ class Excel:
 
         self.file.sheets.add(name, after=self.file.sheets.active)
 
+    @scheduled
     def save(self, file_path=None):
         msg("Salvando arquivo")
 
@@ -133,6 +134,30 @@ class Excel:
                 return
             if value in (row[lookup_col - 1] or ''):
                 yield [row[return_col - 1] for return_col in return_cols]
+    
+    @scheduled
+    def delete_sheet(self, identifier):
+        self.file.sheets[identifier].delete()
+    
+    @scheduled
+    def on_back_range(self, rows, columns, *cell_actions):
+        msg("Ações nas últimas linhas")
+
+        used = self.file.sheets.active.used_range
+        bottom_left = self.file.sheets.active.range((used.last_cell.row, 1))
+        top_right = bottom_left.offset(-rows + 1, columns - 1)
+        back_range = self.file.sheets.active.range(bottom_left.address + ":" + top_right.address)
+        
+        for cell_action in cell_actions:
+            if type(cell_action) == tuple:
+                args = cell_action[1]
+                if len(cell_action) == 3:
+                    kwargs = cell_action[2]
+                else:
+                    kwargs = {}
+                cell_action[0](back_range, *args, **kwargs)
+            else:
+                cell_action(back_range)
 
 
 if __name__ == "__main__":
