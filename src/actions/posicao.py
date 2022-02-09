@@ -53,6 +53,7 @@ class Posicao:
             self.web.totvs_login(password)
         self.web.totvs_fav_pedidos()
 
+        self.excel.open_app()
         self.excel.open_macros()
 
         self.make_workbook()
