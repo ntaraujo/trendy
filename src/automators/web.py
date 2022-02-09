@@ -26,7 +26,7 @@ class Web:
         options.add_argument('--allow-insecure-localhost')
         options.add_argument('--unsafely-treat-insecure-origin-as-secure')
 
-        if compiled():
+        if compiled:
             options.add_argument("--headless")
 
         self.driver = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=options)
