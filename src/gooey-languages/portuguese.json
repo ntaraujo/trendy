@@ -32,7 +32,7 @@
   "status": "Status",
   "stop": "Parar",
   "stop_task": "Interromper a ação?",
-  "success_message": "Programa finalizado com sucesso!\nFeche essa janela ou pressione \"Ok\" para sair da aplicação",
+  "success_message": "Programa finalizado com sucesso!\nPressione \"Ok\" para fechar essa janela",
   "sure_you_want_to_exit": "Você tem certeza que deseja sair?",
   "sure_you_want_to_stop": "Você tem certeza que deseja interromper a tarefa?\nAlguns dados podem ser perdidos ou corrompidos",
   "uh_oh": "\nOps! Parece que temos um problema. \nEnvie-nos o erro abaixo para que saibamos o que aconteceu.\n\n{} \t\t\n\t\t",
