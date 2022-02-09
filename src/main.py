@@ -3,6 +3,13 @@ from automators.web import Web
 from automators.excel import Excel
 import signal
 from utils import cache, save_cache, load_cache, msg, compiled
+import codecs
+import sys
+
+if sys.stdout.encoding != 'UTF-8':
+    sys.stdout = codecs.getwriter('utf-8')(sys.stdout.buffer, 'strict')
+if sys.stderr.encoding != 'UTF-8':
+    sys.stderr = codecs.getwriter('utf-8')(sys.stderr.buffer, 'strict')
 
 web = Web()
 excel = Excel()
