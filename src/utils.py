@@ -159,22 +159,22 @@ def scheduled(function):
     return new_function
 
 
-example_args = {
-    'cods_cliente': """969611
+class ExampleArgs:
+    cods_cliente = """969611
 1000560
 611379
 980420
-""",
-    'nomes_cliente': """""",
-    'prevs_emb': """03122021
+"""
+    nomes_cliente = """"""
+    prevs_emb = """03122021
 03012022
 03022022
-""",
-    'senha_totvs': "SENHA_TOTVS",
-    'dinamica': '/Users/macbookpro/Desktop/NOVA DINÂMICA.xlsx',
-    # 'dinamica': 'C:\\Users\\Nathan\\Downloads\\NOVA DINÂMICA.xlsx',
-    'nome_rede': 'diversa'
-}
+"""
+    senha_totvs = "SENHA_TOTVS"
+    dinamica = '/Users/macbookpro/Desktop/NOVA DINÂMICA.xlsx'
+    # 'dinamica = 'C:\\Users\\Nathan\\Downloads\\NOVA DINÂMICA.xlsx'
+    nome_rede = 'diversa'
+
 
 if __name__ == '__main__':
     print(msg("nova dinâmica"))
