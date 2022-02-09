@@ -8,7 +8,7 @@ web = Web()
 excel = Excel()
 
 
-# debug helper
+# debug helper for vscode
 # import os; os.chdir('/Users/macbookpro/Desktop/dev/trendy/src')
 
 @Gooey(
