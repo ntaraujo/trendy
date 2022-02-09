@@ -120,17 +120,15 @@ def load_cache():
         cache.read(cache_file_path)
 
 
-data_dir_path = appdirs.site_data_dir()
+data_dir_path = appdirs.user_data_dir()
 
 
-def save_data(file_name, file_path):
-    data_file_path = os.path.join(data_dir_path, file_name)
-    if not os.path.exists(data_file_path):
-        shutil.copy(file_path, data_file_path)
-
-
-def get_data_path(file_name):
-    return os.path.join(data_dir_path, file_name)
+def global_path(local_path, basename=None):
+    basename = basename or os.path.basename(local_path)
+    path = os.path.join(data_dir_path, basename)
+    if not os.path.exists(path):
+        shutil.copy(local_path, path)
+    return path
 
 
 def compiled():
