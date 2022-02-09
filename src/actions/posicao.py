@@ -13,13 +13,12 @@ class Posicao:
         self.args = args
         self.web = web
         self.excel = excel
-        # TODO access like args.cods_cliente
-        self.cods_clientes = pasted_to_list(self.args['cods_cliente'] or '')
-        self.nomes_clientes = pasted_to_list(self.args['nomes_cliente'] or '')
+        self.cods_clientes = pasted_to_list(self.args.cods_cliente or '')
+        self.nomes_clientes = pasted_to_list(self.args.nomes_cliente or '')
 
         if not self.cods_clientes or not self.nomes_clientes:
             for status, rede, nome_cliente, cod_cliente in self.excel.file_vertical_search(
-                    self.args['nome_rede'].upper(), self.args['dinamica'], 9, 5, 9, 10, 11):
+                    self.args.nome_rede.upper(), self.args.dinamica, 9, 5, 9, 10, 11):
                 if cod_cliente is None or cod_cliente == '':
                     msg(f'CLIENTE SEM CÓDIGO: "{rede}" --> "{nome_cliente}"')
                     continue
@@ -30,7 +29,7 @@ class Posicao:
                 self.cods_clientes.append(cod_cliente)
                 self.nomes_clientes.append(nome_cliente)
 
-        self.prevs_emb = pasted_to_list(self.args['prevs_emb'] or '')
+        self.prevs_emb = pasted_to_list(self.args.prevs_emb or '')
         if not self.prevs_emb:
             from datetime import datetime
             from utils import datetime_to_simple
@@ -52,7 +51,7 @@ class Posicao:
             self.web.open()
         self.web.totvs_access()
         if not self.web.totvs_logged:
-            password = self.args['senha_totvs']
+            password = self.args.senha_totvs
             self.web.totvs_login(password)
         self.web.totvs_fav_pedidos()
 
@@ -125,10 +124,10 @@ class Posicao:
 
 if __name__ == '__main__':
     from automators import web, excel
-    from utils import example_args
+    from utils import ExampleArgs
 
     Posicao(
-        example_args,
+        ExampleArgs(),
         web.Web(),
         excel.Excel()
     )
