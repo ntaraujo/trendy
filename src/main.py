@@ -2,7 +2,7 @@ from gooey import Gooey, GooeyParser, local_resource_path
 from automators.web import Web
 from automators.excel import Excel
 import signal
-from utils import cache, save_cache, load_cache, msg, compiled
+from utils import cache, save_cache, load_cache, msg, compiled, run_scheduled
 import codecs
 import sys
 
@@ -82,6 +82,7 @@ def main():
                 msg("INFO: Navegador não foi aberto")
             elif compiled:
                 web.close()
+            run_scheduled()
             raise e
 
     if args['action'] == 'Posição':
