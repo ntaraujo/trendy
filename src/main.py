@@ -67,7 +67,7 @@ def main():
              help='A dinâmica é o arquivo com os códigos e nomes de cada cliente')
 
     posicao_advanced_group = group(posicao_parser, 'Avançado')
-    argument(posicao_advanced_group, '--prevs_emb', widget='FilterableDropdown', gooey_options={'height': 100},
+    argument(posicao_advanced_group, '--prevs_emb', widget='Textarea', gooey_options={'height': 100},
              help="As datas de previsão de embarque, separadas por ENTER")
     argument(posicao_advanced_group, '--cods_cliente', widget='Textarea', gooey_options={'height': 100},
              help="Os códigos de cada cliente, separados por ENTER")
