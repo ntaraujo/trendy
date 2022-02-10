@@ -4,7 +4,6 @@ from automators.excel import Excel
 import signal
 from utils import cache, save_cache, load_cache, msg, compiled, run_scheduled, log_file
 
-
 # TODO separate classes: ExcelWriter and ExcelReader
 # TODO separate classes: WebWriter and WebReader
 # TODO remove passwords from git history
