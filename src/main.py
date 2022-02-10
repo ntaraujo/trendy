@@ -54,9 +54,9 @@ def main():
 
     def argument(group_, name, **kwargs):
         cache_name = name.replace('--', '')
-        default = cache['default'].get(cache_name, 'None')
+        default = cache['default'].get(cache_name, 'X')
         if default == 'None':
-            default = None
+            default = 'X'
         group_.add_argument(name, default=default, **kwargs)
 
     def sub_parser(name):
