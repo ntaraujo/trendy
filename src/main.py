@@ -38,6 +38,15 @@ excel = Excel()
     clear_before_run=True
 )
 def main():
+    global msg
+    try:
+        msg("Teste Unicode: çàáâãèéêíìôòóõú")
+    except (UnicodeDecodeError, UnicodeEncodeError):
+        import utils
+        old_msg = msg
+        utils.msg = msg = lambda text: old_msg(text.encode('ascii', 'replace').decode())
+        msg("Unicode não disponível")
+
     load_cache()
 
     parser = GooeyParser(description="Escreva um X nos campos que não devem ser usados")
