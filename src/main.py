@@ -11,6 +11,10 @@ if sys.stdout.encoding != 'UTF-8':
 if sys.stderr.encoding != 'UTF-8':
     sys.stderr = codecs.getwriter('utf-8')(sys.stderr.buffer, 'strict')
 
+# TODO separate classes: ExcelWriter and ExcelReader
+# TODO separate classes: WebWriter and WebReader
+# TODO remove passwords from git history
+# TODO executable on mac os big sur
 web = Web()
 excel = Excel()
 
@@ -63,7 +67,7 @@ def main():
              help='A dinâmica é o arquivo com os códigos e nomes de cada cliente')
 
     posicao_advanced_group = group(posicao_parser, 'Avançado')
-    argument(posicao_advanced_group, '--prevs_emb', widget='Textarea', gooey_options={'height': 100},
+    argument(posicao_advanced_group, '--prevs_emb', widget='FilterableDropdown', gooey_options={'height': 100},
              help="As datas de previsão de embarque, separadas por ENTER")
     argument(posicao_advanced_group, '--cods_cliente', widget='Textarea', gooey_options={'height': 100},
              help="Os códigos de cada cliente, separados por ENTER")
