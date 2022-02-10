@@ -10,7 +10,7 @@ import traceback
 
 data_dir_path = appdirs.user_data_dir()
 
-log_file = open(os.path.join(data_dir_path, 'last-log-trendy.txt'), 'w')
+log_file = open(os.path.join(data_dir_path, 'last-log-trendy.txt'), 'w', encoding='utf-8')
 
 locale.setlocale(locale.LC_TIME, 'pt_BR.UTF-8')
 
@@ -118,13 +118,13 @@ cache_file_path = os.path.join(appdirs.user_cache_dir(), 'trendy_cache.ini')
 
 
 def save_cache():
-    with open(cache_file_path, 'w') as cache_file:
+    with open(cache_file_path, 'w', encoding='utf-8') as cache_file:
         cache.write(cache_file)
 
 
 def load_cache():
     if os.path.exists(cache_file_path):
-        cache.read(cache_file_path)
+        cache.read(cache_file_path, encoding='utf-8')
 
 
 def global_path(local_path, basename=None):
