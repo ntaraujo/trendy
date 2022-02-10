@@ -16,7 +16,6 @@ locale.setlocale(locale.LC_TIME, 'pt_BR.UTF-8')
 
 
 def msg(text):
-    text = text.encode('ascii', 'replace').decode()
     print(f'#### TRENDY ---- {text}')
     log_file.write(text + '\n')
 
