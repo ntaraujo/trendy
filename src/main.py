@@ -3,13 +3,6 @@ from automators.web import Web
 from automators.excel import Excel
 import signal
 from utils import cache, save_cache, load_cache, msg, compiled, run_scheduled, log_file
-import codecs
-import sys
-
-if sys.stdout.encoding != 'UTF-8':
-    sys.stdout = codecs.getwriter('utf-8')(sys.stdout.buffer, 'strict')
-if sys.stderr.encoding != 'UTF-8':
-    sys.stderr = codecs.getwriter('utf-8')(sys.stderr.buffer, 'strict')
 
 # TODO separate classes: ExcelWriter and ExcelReader
 # TODO separate classes: WebWriter and WebReader
@@ -38,15 +31,6 @@ excel = Excel()
     clear_before_run=True
 )
 def main():
-    global msg
-    try:
-        msg("Teste Unicode: çàáâãèéêíìôòóõú")
-    except (UnicodeDecodeError, UnicodeEncodeError):
-        import utils
-        old_msg = msg
-        utils.msg = msg = lambda text: old_msg(text.encode('ascii', 'replace').decode())
-        msg("Unicode não disponível")
-
     load_cache()
 
     parser = GooeyParser(description="Escreva um X nos campos que não devem ser usados")
