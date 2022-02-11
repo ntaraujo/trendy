@@ -6,7 +6,6 @@ import os
 import sys
 import configparser
 import shutil
-import traceback
 
 data_dir_path = appdirs.user_data_dir()
 
@@ -105,7 +104,7 @@ def retry(func, times=3, wait=1):
             try:
                 return func(*args, **kwargs)
             except Exception as e:
-                msg(f"Erro suprimido. Tentando novamente\n{traceback.format_exc()}")
+                msg(f"Erro suprimido. Tentando novamente\n{e}")
                 sleep(wait)
         return func(*args, **kwargs)
 

@@ -76,7 +76,6 @@ def main():
         try:
             action(args, web, excel)
         except Exception as e:
-            import traceback
 
             if not web.opened:
                 msg("INFO: Navegador não foi aberto")
@@ -86,10 +85,10 @@ def main():
             try:
                 run_scheduled()
             except Exception as e:
-                log_file.write(traceback.format_exc() + '\n')
+                log_file.write(e + '\n')
                 raise e
             else:
-                log_file.write(traceback.format_exc() + '\n')
+                log_file.write(e + '\n')
                 raise e
 
     if args.action == 'Posição':
