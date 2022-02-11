@@ -38,7 +38,7 @@ class Posicao(BaseAction):
             for _ in range(3):
                 new_date = datetime_to_simple(datetime(this_year, this_month, 3))
                 msg(f'Data a ser procurada: {new_date}')
-                self.prevs_emb.append(new_date)
+                self.prevs_emb.insert(0, new_date)
                 if this_month == 1:
                     this_month = 12
                     this_year -= 1
