@@ -101,19 +101,21 @@ class Web:
         self.totvs_logged = True
 
     @retry
-    def totvs_fav_pedidos(self):
-        msg('Acessando a consulta de "Pedidos do Cliente - WEB"')
-
+    def totvs_fav_program_access(self, type_col, program_line, in_title=None):
         from selenium.webdriver.support.wait import WebDriverWait
         from selenium.webdriver.common.by import By
         from selenium.webdriver.support import expected_conditions
 
         WebDriverWait(self.driver, 30).until(
-            expected_conditions.element_to_be_clickable((By.CSS_SELECTOR, ".btn-selector-light:nth-child(3)")))
-        self.driver.find_element(By.CSS_SELECTOR, ".btn-selector-light:nth-child(3)").click()
+            expected_conditions.element_to_be_clickable((By.CSS_SELECTOR, f".btn-selector-light:nth-child({type_col})")))
+        self.driver.find_element(By.CSS_SELECTOR, f".btn-selector-light:nth-child({type_col})").click()
         WebDriverWait(self.driver, 30).until(
-            expected_conditions.element_to_be_clickable((By.CSS_SELECTOR, ".ng-scope:nth-child(18) > .col-lg-5")))
-        self.driver.find_element(By.CSS_SELECTOR, ".ng-scope:nth-child(18) > .col-lg-5").click()
+            expected_conditions.element_to_be_clickable((By.CSS_SELECTOR, f".ng-scope:nth-child({program_line}) > .col-lg-5")))
+        program = self.driver.find_element(By.CSS_SELECTOR, f".ng-scope:nth-child({program_line}) > .col-lg-5")
+        if in_title:
+            assert in_title in program.text
+        msg(f'Acessando o favorito "{program.text}"')
+        program.click()
         WebDriverWait(self.driver, 30).until(
             expected_conditions.element_to_be_clickable((By.CSS_SELECTOR, ".btn-primary")))
         self.vars["window_handles"] = self.driver.window_handles

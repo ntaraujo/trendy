@@ -4,15 +4,13 @@ if __name__ == '__main__':
 
     sys_path.insert(0, local_resource_path(""))
 
+from actions.base_action import BaseAction
 from utils import msg, pasted_to_list, run_scheduled
 
 
-class Posicao:
-    def __init__(self, args, web, excel):
-
-        self.args = args
-        self.web = web
-        self.excel = excel
+class Posicao(BaseAction):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.cods_clientes = pasted_to_list(self.args.cods_cliente or '')
         self.nomes_clientes = pasted_to_list(self.args.nomes_cliente or '')
 
@@ -53,7 +51,7 @@ class Posicao:
         if not self.web.totvs_logged:
             password = self.args.senha_totvs
             self.web.totvs_login(password)
-        self.web.totvs_fav_pedidos()
+        self.web.totvs_fav_program_access(3, 18)
 
         self.excel.open_app()
         self.excel.open_macros()
@@ -62,7 +60,7 @@ class Posicao:
 
         run_scheduled()
 
-        web.close()
+        self.web.close()
 
     def make_workbook(self):
         msg('Construindo a Posição da rede')
