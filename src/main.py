@@ -49,6 +49,7 @@ def main():
     def group(parser_, name, **kwargs):
         return parser_.add_argument_group(name, **kwargs)
 
+
     posicao_parser = sub_parser('Posição')
 
     posicao_basic_group = group(posicao_parser, 'Básico', gooey_options={'columns': 1})
@@ -66,6 +67,24 @@ def main():
              help="Os códigos de cada cliente, separados por ENTER")
     argument(posicao_advanced_group, '--nomes_cliente', widget='Textarea', gooey_options={'height': 100},
              help="Os respectivos nomes para cada cliente, separados por ENTER")
+
+
+    titulos_parser = sub_parser('Títulos')
+
+    titulos_basic_group = group(titulos_parser, 'Básico', gooey_options={'columns': 1})
+    argument(titulos_basic_group, 'senha_totvs', widget='PasswordField', help="A senha de acesso ao TOTVS")
+    argument(titulos_basic_group, '--nome_rede',
+             help="O nome da rede da qual o programa fará o relatório de títulos. Ela será buscada no "
+                  "arquivo da dinâmica")
+    argument(titulos_basic_group, '--dinamica', widget='FileChooser',
+             help='A dinâmica é o arquivo com os códigos e nomes de cada cliente')
+
+    titulos_advanced_group = group(titulos_parser, 'Avançado')
+    argument(titulos_advanced_group, '--cods_cliente', widget='Textarea', gooey_options={'height': 100},
+             help="Os códigos de cada cliente, separados por ENTER")
+    argument(titulos_advanced_group, '--nomes_cliente', widget='Textarea', gooey_options={'height': 100},
+             help="Os respectivos nomes para cada cliente, separados por ENTER")
+
 
     args = parser.parse_args()
     cache['default'] = {key: str(value) for key, value in args.__dict__.items()}
@@ -94,6 +113,9 @@ def main():
     if args.action == 'Posição':
         from actions.posicao import Posicao
         run(Posicao)
+    elif args.action == 'Títulos':
+        from actions.titulos import Titulos
+        run(Titulos)
 
 
 if __name__ == '__main__':
