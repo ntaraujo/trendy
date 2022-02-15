@@ -64,7 +64,7 @@ class Posicao(RedeAction):
                 qt_count += int(line[11])
                 vl_count += float(line[12].replace('.', '').replace(',', '.'))
         table[1][7] = qt_count  # noqa
-        table[1][8] = f'{vl_count:_.2f}'.replace('_', '.')  # noqa
+        table[1][8] = f'{vl_count:_.2f}'.replace('.', ',').replace('_', '.')  # noqa
         return table
 
     def make_sheet(self, cod_cliente, nome_cliente):
