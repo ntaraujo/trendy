@@ -4,28 +4,13 @@ if __name__ == '__main__':
 
     sys_path.insert(0, local_resource_path(""))
 
-from actions.base_action import BaseAction
-from utils import msg, pasted_to_list, run_scheduled
+from actions.base_action import RedeAction
+from utils import msg, pasted_to_list, run_scheduled, capitalized_month, simple_to_datetime
 
 
-class Posicao(BaseAction):
+class Posicao(RedeAction):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.cods_clientes = pasted_to_list(self.args.cods_cliente or '')
-        self.nomes_clientes = pasted_to_list(self.args.nomes_cliente or '')
-
-        if not self.cods_clientes or not self.nomes_clientes:
-            for status, rede, nome_cliente, cod_cliente in self.excel.file_vertical_search(
-                    self.args.nome_rede.upper(), self.args.dinamica, 9, 5, 9, 10, 11):
-                if cod_cliente is None or cod_cliente == '':
-                    msg(f'CLIENTE SEM CÓDIGO: "{rede}" --> "{nome_cliente}"')
-                    continue
-                elif status is None or "INATIVO" in status.upper():
-                    continue
-
-                msg(f'Cliente encontrado: "{rede}" --> "{nome_cliente}" --> "{cod_cliente}"')
-                self.cods_clientes.append(cod_cliente)
-                self.nomes_clientes.append(nome_cliente)
 
         self.prevs_emb = pasted_to_list(self.args.prevs_emb or '')
         if not self.prevs_emb:
@@ -53,25 +38,14 @@ class Posicao(BaseAction):
             self.web.totvs_login(password)
         self.web.totvs_fav_program_access(3, 18)
 
-        self.excel.open_app()
-        self.excel.open_macros()
+        # TODO wait for frame
+        # WebDriverWait(self.driver, 30).until(expected_conditions.frame_to_be_available_and_switch_to_it(1))
+        self.web.driver.switch_to.frame(1)
 
         self.make_workbook()
 
         run_scheduled()
-
         self.web.close()
-
-    def make_workbook(self):
-        msg('Construindo a Posição da rede')
-
-        self.excel.open()
-
-        for cod_cliente, nome_cliente in zip(self.cods_clientes, self.nomes_clientes):
-            self.excel.new_sheet(nome_cliente)
-            self.make_sheet(cod_cliente, nome_cliente)
-
-        self.excel.delete_sheet(0)
 
     @staticmethod
     def filter_table(complete_table):
@@ -92,8 +66,6 @@ class Posicao(BaseAction):
 
     def make_sheet(self, cod_cliente, nome_cliente):
         msg(f'Construindo a Posição da loja "{nome_cliente}"')
-
-        from utils import capitalized_month, simple_to_datetime
 
         self.excel.insert(nome_cliente)
         self.excel.on_back_range(
