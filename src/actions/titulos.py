@@ -31,6 +31,7 @@ class Titulos(RedeAction):
     @staticmethod
     def filter_table(complete_table):
         msg("Filtrando tabelas")
+
         table = []
         for line in complete_table[1:]:
             if "AN" not in line[2] and "SIM" in line[7]:
@@ -48,8 +49,6 @@ class Titulos(RedeAction):
         self.web.totvs_fav_clientes_filtro()
 
         table = self.filter_table(self.web.totvs_fav_clientes_complete_table())
-
-        print(table)
 
         self.excel.insert([table[0]])
         self.excel.on_back_range(
