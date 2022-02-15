@@ -6,6 +6,10 @@ import os
 import sys
 import configparser
 import shutil
+from time import sleep
+from filecmp import cmp as filecmp
+
+debugger_active = getattr(sys, 'gettrace', lambda : None)() is not None
 
 data_dir_path = appdirs.user_data_dir()
 
@@ -97,7 +101,8 @@ argparse_to_json.action_to_json = action_to_json
 
 
 def retry(func, times=3, wait=1):
-    from time import sleep
+    if debugger_active:
+        return func
 
     def new_func(*args, **kwargs):
         for _ in range(times):
@@ -130,6 +135,8 @@ def global_path(local_path, basename=None):
     basename = basename or os.path.basename(local_path)
     path = os.path.join(data_dir_path, basename)
     if not os.path.exists(path):
+        if not filecmp(local_path, path):
+            os.remove(path)
         shutil.copy(local_path, path)
     return path
 
@@ -165,7 +172,7 @@ class ExampleArgs:
 611379
 980420
 """
-    nomes_cliente = """"""
+    nomes_cliente = """TESTE"""
     prevs_emb = """03122021
 03012022
 03022022
