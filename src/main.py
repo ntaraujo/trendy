@@ -104,10 +104,10 @@ def main():
             try:
                 run_scheduled()
             except Exception as e:
-                log_file.write(e + '\n')
+                log_file.write(f'{type(e).__name__}\n{e}\n')
                 raise e
             else:
-                log_file.write(e + '\n')
+                log_file.write(f'{type(e).__name__}\n{e}\n')
                 raise e
 
     if args.action == 'Posição':
