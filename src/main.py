@@ -1,3 +1,6 @@
+# debug helper for vscode
+# import os; os.chdir('/Users/macbookpro/Desktop/dev/trendy/src')
+
 from gooey import Gooey, GooeyParser, local_resource_path
 from automators.web import Web
 from automators.excel import Excel
@@ -11,9 +14,6 @@ from utils import cache, save_cache, load_cache, msg, compiled, run_scheduled, l
 web = Web()
 excel = Excel()
 
-
-# debug helper for vscode
-# import os; os.chdir('/Users/macbookpro/Desktop/dev/trendy/src')
 
 @Gooey(
     language="portuguese",
