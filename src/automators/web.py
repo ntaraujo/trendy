@@ -52,11 +52,15 @@ class Web:
         from utils import data_dir_path
         from os import path
 
+        msg(f'Tirando um print do erro. Salvando em "{data_dir_path}"')
+
         ss = Screenshot_Clipping.Screenshot()
         ss.full_Screenshot(self.driver, save_path=data_dir_path , image_name=basename)
         return path.join(data_dir_path, basename)
     
     def prepare_for_new_window(self):
+        msg("Preparando para nova janela")
+
         self.vars["window_handles"] = self.driver.window_handles
         return self.driver.current_window_handle
 
@@ -71,6 +75,8 @@ class Web:
                 return set(wh_now).difference(set(wh_then)).pop()
 
     def wait_disappear(self, by, what):
+        msg("Aguardando elemento sobreposto desaparecer")
+
         try:
             WebDriverWait(self.driver, 10).until(expected_conditions.presence_of_element_located((by, what)))
         except TimeoutException:
@@ -124,6 +130,7 @@ class Web:
     
     @retry
     def totvs_fav_clientes_va_para(self, cod_emitente):
+        msg("Abrindo janela para inserir o código do cliente")
         
         WebDriverWait(self.driver, 30).until(expected_conditions.presence_of_element_located((By.NAME, "Fr_panel")))
         self.driver.switch_to.frame(self.driver.find_element(By.NAME, "Fr_panel"))
@@ -140,6 +147,8 @@ class Web:
     
     @retry
     def totvs_fav_clientes_documentos(self, cod_emitente):
+        msg('Acessando "Documentos"')
+
         WebDriverWait(self.driver, 30).until(expected_conditions.presence_of_element_located((By.NAME, "Fr_work")))
         self.driver.switch_to.frame(self.driver.find_element(By.NAME, "Fr_work"))
         WebDriverWait(self.driver, 30).until(expected_conditions.presence_of_element_located((By.XPATH, f'/html/body/form/div[1]/center/table/tbody/tr[2]/td/div[2]/center/table/tbody/tr[1]/td/input[@value="{cod_emitente}"]')))
@@ -153,6 +162,7 @@ class Web:
     
     @retry
     def totvs_fav_clientes_filtro(self):
+        msg('Filtrando "Documentos"')
         WebDriverWait(self.driver, 30).until(expected_conditions.element_to_be_clickable((By.NAME, "bt_param")))
         main_window = self.prepare_for_new_window()
         self.driver.find_element(By.NAME, "bt_param").click()

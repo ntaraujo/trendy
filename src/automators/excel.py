@@ -133,6 +133,8 @@ class Excel:
     
     @scheduled
     def delete_sheet(self, identifier):
+        msg(f'Deletando planilha "{identifier}"')
+
         self.file.sheets[identifier].delete()
     
     @scheduled

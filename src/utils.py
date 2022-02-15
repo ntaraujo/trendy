@@ -109,7 +109,7 @@ def retry(func, times=3, wait=1):
             try:
                 return func(*args, **kwargs)
             except Exception as e:
-                msg(f"Erro suprimido. Tentando novamente\n{e}")
+                msg(f"Erro suprimido. Tentando novamente\n{type(e).__name__}\n{e}")
                 sleep(wait)
         return func(*args, **kwargs)
 
@@ -122,11 +122,15 @@ cache_file_path = os.path.join(appdirs.user_cache_dir(), 'trendy_cache.ini')
 
 
 def save_cache():
+    msg(f'Salvando cache em "{cache_file_path}"')
+
     with open(cache_file_path, 'w', encoding='utf-8') as cache_file:
         cache.write(cache_file)
 
 
 def load_cache():
+    msg(f'Carregando cache de "{cache_file_path}"')
+
     if os.path.exists(cache_file_path):
         cache.read(cache_file_path, encoding='utf-8')
 
@@ -136,6 +140,7 @@ def global_path(local_path, basename=None):
     path = os.path.join(data_dir_path, basename)
     if not os.path.exists(path):
         if not filecmp(local_path, path):
+            msg(f'Atualizando arquivo em "{path}"')
             os.remove(path)
         shutil.copy(local_path, path)
     return path
