@@ -8,12 +8,16 @@ import configparser
 import shutil
 from time import sleep
 from filecmp import cmp as filecmp
+from gooey import local_resource_path
 
 debugger_active = getattr(sys, 'gettrace', lambda : None)() is not None
 
-data_dir_path = appdirs.user_data_dir()
+data_dir_path = os.path.join(appdirs.user_data_dir(), "Trendy")
 
-log_file = open(os.path.join(data_dir_path, 'last-log-trendy.txt'), 'w', encoding='utf-8')
+if not os.path.exists(data_dir_path):
+    os.mkdir(local_resource_path)
+
+log_file = open(os.path.join(data_dir_path, 'last-log.txt'), 'w', encoding='utf-8')
 
 locale.setlocale(locale.LC_TIME, 'pt_BR.UTF-8')
 
@@ -136,6 +140,7 @@ def load_cache():
 
 
 def global_path(local_path, basename=None):
+    local_path = local_resource_path(local_path)
     basename = basename or os.path.basename(local_path)
     path = os.path.join(data_dir_path, basename)
     if not os.path.exists(path):
