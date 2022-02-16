@@ -7,7 +7,7 @@ class BaseAction:
         self.excel = excel
 
 
-class ExcelAction(BaseAction):
+class WebToExcelAction(BaseAction):
 
     def make_workbook(self):
         raise NotImplementedError()
@@ -20,7 +20,7 @@ class ExcelAction(BaseAction):
         raise NotImplementedError()
 
 
-class RedeAction(ExcelAction):
+class RedeAction(WebToExcelAction):
     def __init__(self, args, web, excel):
         super().__init__(args, web, excel)
 
