@@ -128,12 +128,15 @@ class Web:
         new_window = self.get_new_window()
         self.driver.switch_to.window(new_window)
     
+    def switch_to_frame(self, name):
+        WebDriverWait(self.driver, 30).until(expected_conditions.presence_of_element_located((By.NAME, name)))
+        self.driver.switch_to.frame(self.driver.find_element(By.NAME, name))
+    
     @retry
     def totvs_fav_clientes_va_para(self, cod_emitente):
         msg("Abrindo janela para inserir o código do cliente")
         
-        WebDriverWait(self.driver, 30).until(expected_conditions.presence_of_element_located((By.NAME, "Fr_panel")))
-        self.driver.switch_to.frame(self.driver.find_element(By.NAME, "Fr_panel"))
+        self.switch_to_frame("Fr_panel")
         WebDriverWait(self.driver, 30).until(expected_conditions.element_to_be_clickable((By.XPATH, "/html/body/table/tbody/tr/td/table/tbody/tr/td[5]/a")))
         main_window = self.prepare_for_new_window()
         self.driver.find_element(By.XPATH, "/html/body/table/tbody/tr/td/table/tbody/tr/td[5]/a").click()
@@ -149,8 +152,7 @@ class Web:
     def totvs_fav_clientes_documentos(self, cod_emitente):
         msg('Acessando "Documentos"')
 
-        WebDriverWait(self.driver, 30).until(expected_conditions.presence_of_element_located((By.NAME, "Fr_work")))
-        self.driver.switch_to.frame(self.driver.find_element(By.NAME, "Fr_work"))
+        self.switch_to_frame("Fr_work")
         WebDriverWait(self.driver, 30).until(expected_conditions.presence_of_element_located((By.XPATH, f'/html/body/form/div[1]/center/table/tbody/tr[2]/td/div[2]/center/table/tbody/tr[1]/td/input[@value="{cod_emitente}"]')))
         main_window = self.prepare_for_new_window()
         self.driver.find_element(By.XPATH, "/html/body/form/div[1]/center/table/tbody/tr[2]/td/div[1]/center/table/tbody/tr/th[4]/a").click()

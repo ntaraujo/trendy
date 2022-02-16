@@ -8,7 +8,7 @@ if __name__ == '__main__':
     sys_path.insert(0, local_resource_path(""))
 
 from actions.base_action import RedeAction
-from utils import msg, pasted_to_list, run_scheduled, capitalized_month, simple_to_datetime
+from utils import msg, pasted_to_list, retry, run_scheduled, capitalized_month, simple_to_datetime
 
 
 class Posicao(RedeAction):
@@ -41,9 +41,7 @@ class Posicao(RedeAction):
             self.web.totvs_login(password)
         self.web.totvs_fav_program_access(3, 18)
 
-        # TODO wait for frame
-        # WebDriverWait(self.driver, 30).until(expected_conditions.frame_to_be_available_and_switch_to_it(1))
-        self.web.driver.switch_to.frame(1)
+        retry(self.web.switch_to_frame)("Fr_work")
 
         self.make_workbook()
 
