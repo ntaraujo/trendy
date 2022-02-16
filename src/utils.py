@@ -143,10 +143,10 @@ def global_path(local_path, basename=None):
     local_path = local_resource_path(local_path)
     basename = basename or os.path.basename(local_path)
     path = os.path.join(data_dir_path, basename)
+    if os.path.exists(path) and not filecmp(local_path, path):
+        msg(f'Atualizando arquivo em "{path}"')
+        os.remove(path)
     if not os.path.exists(path):
-        if not filecmp(local_path, path):
-            msg(f'Atualizando arquivo em "{path}"')
-            os.remove(path)
         shutil.copy(local_path, path)
     return path
 
