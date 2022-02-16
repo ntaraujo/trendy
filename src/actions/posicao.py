@@ -12,8 +12,8 @@ from utils import msg, pasted_to_list, retry, run_scheduled, capitalized_month, 
 
 
 class Posicao(RedeAction):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, args, web, excel):
+        super().__init__(args, web, excel)
 
         self.prevs_emb = pasted_to_list(self.args.prevs_emb or '')
         if not self.prevs_emb:

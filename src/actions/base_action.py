@@ -21,8 +21,9 @@ class ExcelAction(BaseAction):
 
 
 class RedeAction(ExcelAction):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, args, web, excel):
+        super().__init__(args, web, excel)
+
         self.cods_clientes = pasted_to_list(self.args.cods_cliente or '')
         self.nomes_clientes = pasted_to_list(self.args.nomes_cliente or '')
 
