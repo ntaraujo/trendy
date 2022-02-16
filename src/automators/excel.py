@@ -33,7 +33,7 @@ class Excel:
     def open_macros(self):
         msg("Abrindo macros")
 
-        macros_path = global_path(local_resource_path("automators/macros-trendy.xlsb"))
+        macros_path = global_path("data/macros.xlsb")
         self.macros_file = self.app.books.open(macros_path)
         self.macros_file.activate()
 

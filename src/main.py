@@ -99,7 +99,7 @@ def main():
             if not web.opened:
                 msg("INFO: Navegador não foi aberto")
             elif compiled:
-                web.print('last-error-trendy.png')
+                web.print('last-error.png')
                 web.close()
             try:
                 run_scheduled()
