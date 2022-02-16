@@ -12,8 +12,8 @@ from utils import msg, run_scheduled
 
 
 class Titulos(RedeAction):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, args, web, excel):
+        super().__init__(args, web, excel)
 
         if not self.web.opened:
             self.web.open()
