@@ -15,7 +15,7 @@ debugger_active = getattr(sys, 'gettrace', lambda : None)() is not None
 data_dir_path = os.path.join(appdirs.user_data_dir(), "Trendy")
 
 if not os.path.exists(data_dir_path):
-    os.mkdir(local_resource_path)
+    os.mkdir(data_dir_path)
 
 log_file = open(os.path.join(data_dir_path, 'last-log.txt'), 'w', encoding='utf-8')
 
