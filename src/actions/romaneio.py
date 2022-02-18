@@ -74,10 +74,9 @@ class Romaneio(WebToExcelAction):
         self.excel.open_app()
         self.excel.open(global_path("resources/romaneio.xls"))
 
-        sh = self.excel.file.sheets.active
-        sh['D9'].value = cnpj
-        sh['G8'].value = [[nf], [serie], [oc]]
-        sh['C14'].value = table
+        self.excel.assign('D9', cnpj)
+        self.excel.assign('G8', [[nf], [serie], [oc]])
+        self.excel.assign('C14', table)
 
         run_scheduled()
         self.web.close()
