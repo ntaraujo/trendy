@@ -22,7 +22,7 @@ def encoding_of(file_path):
     return 'utf-8' if result == 'ascii' else result
 
 def open(*args, **kwargs):
-    if len(args) < 4 or 'encoding' not in kwargs:
+    if len(args) < 4 and 'encoding' not in kwargs:
         kwargs['encoding'] = encoding_of(args[0] if args else kwargs['file'])
 
     return default_open(*args, **kwargs)
