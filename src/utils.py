@@ -10,6 +10,43 @@ from time import sleep
 from filecmp import cmp as filecmp
 from gooey import local_resource_path
 
+default_open = open
+
+def open(*args, **kwargs):
+    try:
+        return default_open(*args, **kwargs)
+    except UnicodeDecodeError:
+        import chardet
+
+        if len(args) > 1:
+            old_mode = args[1]
+            args[1] = 'rb'
+        else:
+            if 'mode' in kwargs:
+                old_mode = kwargs['mode']
+            else:
+                old_mode = None
+            kwargs['mode'] = 'rb'
+        
+
+        with default_open(*args, **kwargs) as rawdata:
+            result = chardet.detect(rawdata.read(100000))
+
+        if len(args) > 1:
+            args[1] = old_mode
+        else:
+            if old_mode is None:
+                del kwargs['mode']
+            else:
+                kwargs['mode'] = old_mode
+            
+        if len(args) > 3:
+            args[4] = result['encoding']
+        else:
+            kwargs['encoding'] = result['encoding']
+
+        return default_open(*args, **kwargs)
+
 debugger_active = getattr(sys, 'gettrace', lambda : None)() is not None
 
 data_dir_path = os.path.join(appdirs.user_data_dir(), "Trendy")
@@ -17,7 +54,7 @@ data_dir_path = os.path.join(appdirs.user_data_dir(), "Trendy")
 if not os.path.exists(data_dir_path):
     os.mkdir(data_dir_path)
 
-log_file = open(os.path.join(data_dir_path, 'last-log.txt'), 'w', encoding='utf-8')
+log_file = open(os.path.join(data_dir_path, 'last-log.txt'), 'w')
 
 locale.setlocale(locale.LC_TIME, 'pt_BR.UTF-8')
 
@@ -128,7 +165,7 @@ cache_file_path = os.path.join(appdirs.user_cache_dir(), 'trendy_cache.ini')
 def save_cache():
     msg(f'Salvando cache em "{cache_file_path}"')
 
-    with open(cache_file_path, 'w', encoding='utf-8') as cache_file:
+    with open(cache_file_path, 'w') as cache_file:
         cache.write(cache_file)
 
 
@@ -136,7 +173,15 @@ def load_cache():
     msg(f'Carregando cache de "{cache_file_path}"')
 
     if os.path.exists(cache_file_path):
-        cache.read(cache_file_path, encoding='utf-8')
+        try:
+            cache.read(cache_file_path)
+        except UnicodeDecodeError:
+            import chardet
+
+            with default_open(cache_file_path, 'rb') as rawdata:
+                result = chardet.detect(rawdata.read(100000))
+            
+            cache.read(cache_file_path, encoding=result['encoding'])
 
 
 def global_path(local_path, basename=None):
@@ -174,6 +219,19 @@ def scheduled(function):
     def new_function(*args, **kwargs):
         schedule(function, *args, **kwargs)
     return new_function
+
+
+def common_start(*strings):
+    def _iter():
+        for letters in zip(*strings):
+            letters_iter = iter(letters)
+            first = next(letters_iter)
+            if all(first == others for others in letters_iter):
+                yield first
+            else:
+                return
+
+    return ''.join(_iter())
 
 
 class ExampleArgs:
