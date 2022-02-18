@@ -22,9 +22,7 @@ def encoding_of(file_path):
     return 'utf-8' if result == 'ascii' else result
 
 def open(*args, **kwargs):
-    if len(args) > 3:
-        args[4] = encoding_of(args[0])
-    else:
+    if len(args) < 4 or 'encoding' not in kwargs:
         kwargs['encoding'] = encoding_of(args[0] if args else kwargs['file'])
 
     return default_open(*args, **kwargs)
@@ -36,7 +34,7 @@ data_dir_path = os.path.join(appdirs.user_data_dir(), "Trendy")
 if not os.path.exists(data_dir_path):
     os.mkdir(data_dir_path)
 
-log_file = open(os.path.join(data_dir_path, 'last-log.txt'), 'w')
+log_file = open(os.path.join(data_dir_path, 'last-log.txt'), 'w', encoding='utf-8')
 
 locale.setlocale(locale.LC_TIME, 'pt_BR.UTF-8')
 
@@ -147,7 +145,7 @@ cache_file_path = os.path.join(appdirs.user_cache_dir(), 'trendy_cache.ini')
 def save_cache():
     msg(f'Salvando cache em "{cache_file_path}"')
 
-    with open(cache_file_path, 'w') as cache_file:
+    with open(cache_file_path, 'w', encoding='utf-8') as cache_file:
         cache.write(cache_file)
 
 
@@ -155,7 +153,7 @@ def load_cache():
     msg(f'Carregando cache de "{cache_file_path}"')
 
     if os.path.exists(cache_file_path):
-        cache.read(cache_file_path, encoding=encoding_of(cache_file_path))
+        cache.read(cache_file_path, encoding='utf-8')
 
 
 def global_path(local_path, basename=None):
