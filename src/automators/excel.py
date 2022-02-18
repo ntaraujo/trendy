@@ -177,6 +177,10 @@ class Excel:
                 cell_action[0](back_range, *args, **kwargs)
             else:
                 cell_action(back_range)
+    
+    @scheduled
+    def assign(self, cell_ref, value):
+        self.file.sheets.active.range(cell_ref).value = value
 
 
 if __name__ == "__main__":
