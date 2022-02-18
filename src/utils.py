@@ -16,8 +16,10 @@ default_open = open
 def encoding_of(file_path):
     if not os.path.exists(file_path):
         return 'utf-8'
+
     with default_open(file_path, 'rb') as rawdata:
-        return chardet.detect(rawdata.read(100000))['encoding']
+        result = chardet.detect(rawdata.read(100000))['encoding']
+    return 'utf-8' if result == 'ascii' else result
 
 def open(*args, **kwargs):
     if len(args) > 3:
