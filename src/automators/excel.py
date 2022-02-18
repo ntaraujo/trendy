@@ -5,7 +5,7 @@ if __name__ == '__main__':
 
     sys_path.insert(0, local_resource_path(""))
 
-from utils import compiled, msg, global_path, scheduled
+from utils import compiled, msg, global_path, scheduled, open
 
 
 class Excel:
@@ -46,7 +46,7 @@ class Excel:
             from os.path import abspath
             path = abspath(path)
             msg(f'Abrindo pasta do Excel em "{path}"')
-            self.app.books.open(path)
+            self.file = self.app.books.open(path)
 
         self.file.activate()
         self.file.app.visible = not compiled
@@ -120,7 +120,7 @@ class Excel:
         self.file.save(file_path)
 
     @staticmethod
-    def file_vertical_search(value, file_path, lookup_col, *return_cols):
+    def xls_file_vertical_search(value, file_path, lookup_col, *return_cols):
         msg(f'Procurando "{value}" em "{file_path}"')
         from openpyxl import load_workbook
 
@@ -130,6 +130,27 @@ class Excel:
                 return
             if value in (row[lookup_col - 1] or ''):
                 yield [row[return_col - 1] for return_col in return_cols]
+
+    @staticmethod
+    def csv_file_vertical_search(value, file_or_path, lookup_col, *return_cols):
+        msg(f'Procurando "{value}" em "{file_or_path}"')
+        from csv import reader
+
+        if type(file_or_path) == str:
+            file = reader(open(file_or_path))
+        for row in file:
+            if value in (row[lookup_col - 1] or ''):
+                yield [row[return_col - 1] for return_col in return_cols]
+    
+    @staticmethod
+    def get_csv_reader(file_path, open_kwargs=None, reader_kwargs=None):
+        msg(f'Abrindo "{file_path}"')
+
+        from csv import reader
+
+        open_kwargs = open_kwargs or {}
+        reader_kwargs = reader_kwargs or {}
+        return reader(open(file_path, **open_kwargs), **reader_kwargs)
     
     @scheduled
     def delete_sheet(self, identifier):
