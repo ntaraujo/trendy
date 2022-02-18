@@ -9,43 +9,21 @@ import shutil
 from time import sleep
 from filecmp import cmp as filecmp
 from gooey import local_resource_path
+import chardet
 
 default_open = open
 
+def encoding_of(file_path):
+    with default_open(file_path, 'rb') as rawdata:
+        return chardet.detect(rawdata.read(100000))['encoding']
+
 def open(*args, **kwargs):
-    try:
-        return default_open(*args, **kwargs)
-    except UnicodeDecodeError:
-        import chardet
+    if len(args) > 3:
+        args[4] = encoding_of(args[0])
+    else:
+        kwargs['encoding'] = encoding_of(args[0] if args else kwargs['file'])
 
-        if len(args) > 1:
-            old_mode = args[1]
-            args[1] = 'rb'
-        else:
-            if 'mode' in kwargs:
-                old_mode = kwargs['mode']
-            else:
-                old_mode = None
-            kwargs['mode'] = 'rb'
-        
-
-        with default_open(*args, **kwargs) as rawdata:
-            result = chardet.detect(rawdata.read(100000))
-
-        if len(args) > 1:
-            args[1] = old_mode
-        else:
-            if old_mode is None:
-                del kwargs['mode']
-            else:
-                kwargs['mode'] = old_mode
-            
-        if len(args) > 3:
-            args[4] = result['encoding']
-        else:
-            kwargs['encoding'] = result['encoding']
-
-        return default_open(*args, **kwargs)
+    return default_open(*args, **kwargs)
 
 debugger_active = getattr(sys, 'gettrace', lambda : None)() is not None
 
@@ -173,15 +151,7 @@ def load_cache():
     msg(f'Carregando cache de "{cache_file_path}"')
 
     if os.path.exists(cache_file_path):
-        try:
-            cache.read(cache_file_path)
-        except UnicodeDecodeError:
-            import chardet
-
-            with default_open(cache_file_path, 'rb') as rawdata:
-                result = chardet.detect(rawdata.read(100000))
-            
-            cache.read(cache_file_path, encoding=result['encoding'])
+        cache.read(cache_file_path, encoding=encoding_of(cache_file_path))
 
 
 def global_path(local_path, basename=None):
