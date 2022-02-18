@@ -1,10 +1,13 @@
-from utils import pasted_to_list, msg
+from utils import pasted_to_list, msg, ExampleArgs
+from automators.web import Web
+from automators.excel import Excel
+
 
 class BaseAction:
     def __init__(self, args, web, excel):
-        self.args = args
-        self.web = web
-        self.excel = excel
+        self.args: ExampleArgs = args
+        self.web: Web = web
+        self.excel: Excel = excel
 
 
 class WebToExcelAction(BaseAction):
