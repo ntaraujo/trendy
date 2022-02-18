@@ -53,12 +53,12 @@ def main():
     posicao_parser = sub_parser('Posição')
 
     posicao_basic_group = group(posicao_parser, 'Básico', gooey_options={'columns': 1})
-    argument(posicao_basic_group, 'senha_totvs', widget='PasswordField', help="A senha de acesso ao TOTVS")
     argument(posicao_basic_group, '--nome_rede',
              help="O nome da rede da qual o programa fará a posição. Ela será buscada no "
                   "arquivo da dinâmica")
     argument(posicao_basic_group, '--dinamica', widget='FileChooser',
              help='A dinâmica é o arquivo com os códigos e nomes de cada cliente')
+    argument(posicao_basic_group, 'senha_totvs', widget='PasswordField', help="A senha de acesso ao TOTVS")
 
     posicao_advanced_group = group(posicao_parser, 'Avançado')
     argument(posicao_advanced_group, '--prevs_emb', widget='Textarea', gooey_options={'height': 100},
@@ -72,12 +72,12 @@ def main():
     titulos_parser = sub_parser('Títulos')
 
     titulos_basic_group = group(titulos_parser, 'Básico', gooey_options={'columns': 1})
-    argument(titulos_basic_group, 'senha_totvs', widget='PasswordField', help="A senha de acesso ao TOTVS")
     argument(titulos_basic_group, '--nome_rede',
              help="O nome da rede da qual o programa fará o relatório de títulos. Ela será buscada no "
                   "arquivo da dinâmica")
     argument(titulos_basic_group, '--dinamica', widget='FileChooser',
              help='A dinâmica é o arquivo com os códigos e nomes de cada cliente')
+    argument(titulos_basic_group, 'senha_totvs', widget='PasswordField', help="A senha de acesso ao TOTVS")
 
     titulos_advanced_group = group(titulos_parser, 'Avançado')
     argument(titulos_advanced_group, '--cods_cliente', widget='Textarea', gooey_options={'height': 100},
@@ -89,10 +89,10 @@ def main():
     romaneio_parser = sub_parser('Romaneio')
 
     romaneio_basic_group = group(romaneio_parser, 'Básico', gooey_options={'columns': 1})
-    argument(romaneio_basic_group, 'senha_totvs', widget='PasswordField', help="A senha de acesso ao TOTVS")
     argument(romaneio_basic_group, 'oc', help="Número da ordem de compra")
     argument(romaneio_basic_group, 'cac', widget='FileChooser', help='Arquivo CAC no formato .csv')
     argument(romaneio_basic_group, 'etiqueta', widget='FileChooser', help='Arquivo da etiqueta no formato .csv')
+    argument(romaneio_basic_group, 'senha_totvs', widget='PasswordField', help="A senha de acesso ao TOTVS")
 
 
     args = parser.parse_args()
