@@ -133,8 +133,8 @@ class Web:
         self.driver.switch_to.frame(self.driver.find_element(By.NAME, name))
     
     @retry
-    def totvs_fav_clientes_va_para(self, cod_emitente):
-        msg("Abrindo janela para inserir o código do cliente")
+    def totvs_va_para(self, **fields):
+        msg("Abrindo janela para inserir dados")
         
         self.switch_to_frame("Fr_panel")
         WebDriverWait(self.driver, 30).until(expected_conditions.element_to_be_clickable((By.XPATH, "/html/body/table/tbody/tr/td/table/tbody/tr/td[5]/a")))
@@ -143,10 +143,17 @@ class Web:
 
         new_window = self.get_new_window()
         self.driver.switch_to.window(new_window)
-        self.driver.find_element(By.NAME, "w_cod_emitente").send_keys(cod_emitente)
-        self.driver.find_element(By.NAME, "w_cod_emitente").send_keys(Keys.ENTER)
+        for field, value in fields.items():
+            self.driver.find_element(By.NAME, field).send_keys(value)
+        self.driver.find_element(By.NAME, list(fields.keys())[-1]).send_keys(Keys.ENTER)
         
         self.driver.switch_to.window(main_window)
+
+    def totvs_fav_clientes_va_para(self, cod_emitente):
+        self.totvs_va_para(w_cod_emitente=cod_emitente)
+
+    def totvs_fav_notas_va_para(self, estabelecimento, serie, nf):
+        self.totvs_va_para(w_cod_estabel=estabelecimento, w_serie=serie, w_nr_nota_fis=nf)
     
     @retry
     def totvs_fav_clientes_documentos(self, cod_emitente):
@@ -161,6 +168,14 @@ class Web:
         self.driver.switch_to.window(new_window)
 
         return main_window
+    
+    @retry
+    def totvs_fav_notas_items(self, nf):
+        msg('Acessando "Documentos"')
+
+        self.switch_to_frame("Fr_work")
+        WebDriverWait(self.driver, 30).until(expected_conditions.presence_of_element_located((By.XPATH, f'/html/body/form/div/center/table/tbody/tr/td/div/center/table/tbody/tr[2]/td/div/center/table/tbody/tr/td/div/center/table/tbody/tr[1]/td[1]/input[3][@value="{nf}"]')))
+        self.driver.find_element(By.XPATH, "/html/body/form/div/center/table/tbody/tr/td/div/center/table/tbody/tr[3]/td/div/center/table/tbody/tr/td[5]/a").click()
     
     @retry
     def totvs_fav_clientes_filtro(self):
@@ -214,7 +229,9 @@ class Web:
             HTML(self.driver.find_element_by_xpath(tbody_xpath).get_attribute('innerHTML'))[0]
         table = []
         for line in parsed_table:
-            if len(line) != expected_cols:
+            if type(expected_cols) == int:
+                expected_cols = lambda l: len(l) == expected_cols
+            if not expected_cols(line):
                 raise Exception(f"Table has not the expected cols number at all lines")
             table.append([self.totvs_table_helper(col) for col in line])
 
@@ -264,6 +281,9 @@ class Web:
     
     def totvs_fav_clientes_complete_table(self):
         return self.totvs_complete_table("/html/body/form/table[1]/tbody", 19, "body > form > table:nth-child(5) > tbody > tr > td > a > img")
+    
+    def totvs_fav_notas_complete_table(self):
+        return self.totvs_complete_table("/html/body/form/div/center/table/tbody/tr/td/div/center/table/tbody/tr[4]/td/div/center/table/tbody/tr[3]/td/div/center/table/tbody/tr/td/div/center/table[2]/tbody", lambda l: len(l) in (7, 13, 3), "anything")
 
 
 if __name__ == '__main__':
