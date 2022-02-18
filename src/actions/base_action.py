@@ -31,7 +31,7 @@ class RedeAction(WebToExcelAction):
         self.nomes_clientes = pasted_to_list(self.args.nomes_cliente or '')
 
         if not self.cods_clientes or not self.nomes_clientes:
-            for status, rede, nome_cliente, cod_cliente in self.excel.file_vertical_search(
+            for status, rede, nome_cliente, cod_cliente in self.excel.xls_file_vertical_search(
                     self.args.nome_rede.upper(), self.args.dinamica, 9, 5, 9, 10, 11):
                 if cod_cliente is None or cod_cliente == '':
                     msg(f'CLIENTE SEM CÓDIGO: "{rede}" --> "{nome_cliente}"')
