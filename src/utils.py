@@ -249,6 +249,9 @@ class ExampleArgs:
     dinamica = '/Users/macbookpro/Desktop/NOVA DINÂMICA.xlsx'
     # 'dinamica = 'C:\\Users\\Nathan\\Downloads\\NOVA DINÂMICA.xlsx'
     nome_rede = 'diversa'
+    cac = '/Users/macbookpro/Desktop/dev/trendy/examples/cac.csv'
+    oc = '4500655584'
+    etiqueta = '/Users/macbookpro/Desktop/dev/trendy/examples/etiqueta.csv'
 
 
 if __name__ == '__main__':
