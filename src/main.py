@@ -86,11 +86,18 @@ def main():
              help="Os respectivos nomes para cada cliente, separados por ENTER")
 
 
-    romaneio_parser = sub_parser('RomaneioInício')
+    romaneio1_parser = sub_parser('RomaneioInício')
 
-    romaneio_basic_group = group(romaneio_parser, 'Básico', gooey_options={'columns': 1})
-    argument(romaneio_basic_group, 'cac', widget='FileChooser', help='Arquivo CAC no formato .csv')
-    argument(romaneio_basic_group, 'senha_totvs', widget='PasswordField', help="A senha de acesso ao TOTVS")
+    romaneio1_basic_group = group(romaneio1_parser, 'Básico', gooey_options={'columns': 1})
+    argument(romaneio1_basic_group, 'cac', widget='FileChooser', help='Arquivo CAC no formato .csv')
+    argument(romaneio1_basic_group, 'senha_totvs', widget='PasswordField', help="A senha de acesso ao TOTVS")
+
+
+    romaneio2_parser = sub_parser('RomaneioFim')
+
+    romaneio2_basic_group = group(romaneio2_parser, 'Básico', gooey_options={'columns': 1})
+    argument(romaneio2_basic_group, 'romaneio_inicio', widget='FileChooser', help='Arquivo gerado pela ação RomaneioInício')
+    argument(romaneio2_basic_group, 'arquivo_oc', widget='FileChooser', help='Arquivo com a OC na primeira coluna em .csv (etiqueta)')
 
 
     romaneio_parser = sub_parser('RomaneioCompleto')
@@ -135,6 +142,9 @@ def main():
     elif args.action == 'RomaneioInício':
         from actions.romaneio_inicio import RomaneioInicio
         run(RomaneioInicio)
+    elif args.action == 'RomaneioFim':
+        from actions.romaneio_fim import RomaneioFim
+        run(RomaneioFim)
     elif args.action == 'RomaneioCompleto':
         from actions.romaneio_completo import RomaneioCompleto
         run(RomaneioCompleto)
