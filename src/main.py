@@ -86,7 +86,14 @@ def main():
              help="Os respectivos nomes para cada cliente, separados por ENTER")
 
 
-    romaneio_parser = sub_parser('Romaneio')
+    romaneio_parser = sub_parser('RomaneioInício')
+
+    romaneio_basic_group = group(romaneio_parser, 'Básico', gooey_options={'columns': 1})
+    argument(romaneio_basic_group, 'cac', widget='FileChooser', help='Arquivo CAC no formato .csv')
+    argument(romaneio_basic_group, 'senha_totvs', widget='PasswordField', help="A senha de acesso ao TOTVS")
+
+
+    romaneio_parser = sub_parser('RomaneioCompleto')
 
     romaneio_basic_group = group(romaneio_parser, 'Básico', gooey_options={'columns': 1})
     argument(romaneio_basic_group, 'oc', help="Número da ordem de compra")
@@ -125,9 +132,12 @@ def main():
     elif args.action == 'Títulos':
         from actions.titulos import Titulos
         run(Titulos)
-    elif args.action == 'Romaneio':
-        from actions.romaneio import Romaneio
-        run(Romaneio)
+    elif args.action == 'RomaneioInício':
+        from actions.romaneio_inicio import RomaneioInicio
+        run(RomaneioInicio)
+    elif args.action == 'RomaneioCompleto':
+        from actions.romaneio_completo import RomaneioCompleto
+        run(RomaneioCompleto)
 
 
 if __name__ == '__main__':

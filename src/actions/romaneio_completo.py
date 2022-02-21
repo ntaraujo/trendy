@@ -12,7 +12,7 @@ from utils import run_scheduled, common_start, global_path
 import re
 
 
-class Romaneio(WebToExcelAction):
+class RomaneioCompleto(WebToExcelAction):
     def __init__(self, args, web, excel):
         super().__init__(args, web, excel)
 
@@ -66,7 +66,7 @@ class Romaneio(WebToExcelAction):
             tam = line[tam_ind].strip()
             qtd = line[qtd_ind].strip()
             preco = nf_itens_dict[cod_ref][preco_ind].strip()
-            total = float(preco.replace('.', '').replace(',', '.')) * int(qtd)
+            total = float(preco.replace('.', '').replace(',', '.')) * int(qtd.replace(',', ''))
             total = f'{total:_.2f}'.replace('.', ',').replace('_', '.')
 
             table.append((cod, material, desc, cor, tam, qtd, preco, total, oc))
@@ -86,7 +86,7 @@ if __name__ == '__main__':
     from automators import web, excel
     from utils import ExampleArgs
 
-    Romaneio(
+    RomaneioCompleto(
         ExampleArgs(),
         web.Web(),
         excel.Excel()
