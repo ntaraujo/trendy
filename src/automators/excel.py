@@ -23,7 +23,7 @@ class Excel:
             msg("Iniciando uma instância do Excel para uso do programa")
             new_app = xw.App()
             new_app.activate()
-            new_app.visible = True
+            # new_app.visible = True
             self.app = new_app
         else:
             pids = sorted(xw.apps.keys())
@@ -49,7 +49,7 @@ class Excel:
             self.file = self.app.books.open(path)
 
         self.file.activate()
-        self.file.app.visible = not compiled
+        # self.file.app.visible = not compiled
 
         self.path = path
 
