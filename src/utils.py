@@ -225,6 +225,18 @@ def common_start(*strings):
     return ''.join(_iter())
 
 
+def insort(_list, n, key=None):
+    if key is None:
+        def key(el):
+            return el > n
+  
+    for index, el in enumerate(_list):
+      if key(el):
+        break
+  
+    _list.insert(index, n)
+
+
 class ExampleArgs:
     cods_cliente = """969611
 1000560
