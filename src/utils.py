@@ -61,8 +61,24 @@ def iso_to_simple(date):
     return ''.join(date.split('-')[::-1])
 
 
+pt_br_months = [
+    "Janeiro",
+    "Fevereiro",
+    "Março",
+    "Abril",
+    "Maio",
+    "Junho",
+    "Julho",
+    "Agosto",
+    "Setembro",
+    "Outubro",
+    "Novembro",
+    "Dezembro"
+]
+
+
 def capitalized_month(date):
-    return date.strftime('%B').upper()
+    return pt_br_months[date.month - 1].upper()
 
 
 def pasted_to_list(text):
