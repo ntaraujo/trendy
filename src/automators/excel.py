@@ -120,24 +120,40 @@ class Excel:
         self.file.save(file_path)
 
     @staticmethod
-    def xls_file_vertical_search(value, file_path, lookup_col, *return_cols):
-        msg(f'Procurando "{value}" em "{file_path}"')
-        from openpyxl import load_workbook
+    def xls_file_vertical_search(value, file_or_path, lookup_col, *return_cols):
+        msg(f'Procurando "{value}"')
 
-        ws = load_workbook(file_path).active
+        if type(file_or_path) == str:
+            from openpyxl import load_workbook
+
+            ws = load_workbook(file_or_path).active
+        else:
+            ws = file_or_path
         for row in ws.values:
             if row is None:
                 return
             if value in (row[lookup_col - 1] or ''):
                 yield [row[return_col - 1] for return_col in return_cols]
+    
+    @staticmethod
+    def xls_workbook(file_path):
+        msg(f'Abrindo "{file_path}"')
+        
+        from openpyxl import load_workbook
+
+        return load_workbook(file_path)
+
 
     @staticmethod
     def csv_file_vertical_search(value, file_or_path, lookup_col, *return_cols):
-        msg(f'Procurando "{value}" em "{file_or_path}"')
-        from csv import reader
+        msg(f'Procurando "{value}"')
 
         if type(file_or_path) == str:
+            from csv import reader
+
             file = reader(open(file_or_path))
+        else:
+            file = file_or_path
         for row in file:
             if value in (row[lookup_col - 1] or ''):
                 yield [row[return_col - 1] for return_col in return_cols]
