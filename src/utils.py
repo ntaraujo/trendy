@@ -27,8 +27,6 @@ def open(*args, **kwargs):
 
     return default_open(*args, **kwargs)
 
-debugger_active = getattr(sys, 'gettrace', lambda : None)() is not None
-
 data_dir_path = os.path.join(appdirs.user_data_dir(), "Trendy")
 
 if not os.path.exists(data_dir_path):
@@ -43,6 +41,11 @@ def msg(text):
     ascii_compatible = text.encode('ascii', 'replace').decode()
     print(f'#### TRENDY ---- {ascii_compatible}')
     log_file.write(text + '\n')
+
+
+debugger_active = getattr(sys, 'gettrace', lambda : None)() is not None
+if debugger_active:
+    msg("Rodando em modo de depuração")
 
 
 def simple_to_datetime(date):
