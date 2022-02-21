@@ -231,18 +231,17 @@ class ExampleArgs:
 611379
 980420
 """
-    nomes_cliente = """TESTE"""
-    prevs_emb = """03122021
-03012022
-03022022
+    nomes_cliente = """"""
+    prevs_emb = """03032022
 """
     senha_totvs = "SENHA_TOTVS"
     dinamica = '/Users/macbookpro/Desktop/NOVA DINÂMICA.xlsx'
     # 'dinamica = 'C:\\Users\\Nathan\\Downloads\\NOVA DINÂMICA.xlsx'
-    nome_rede = 'diversa'
+    nome_rede = 'kammu'
     cac = '/Users/macbookpro/Desktop/dev/trendy/examples/cac.csv'
     oc = '4500655584'
-    etiqueta = '/Users/macbookpro/Desktop/dev/trendy/examples/etiqueta.csv'
+    romaneio_inicio = '/Users/macbookpro/Desktop/dev/trendy/examples/romaneio-inicio.xls'
+    arquivo_oc = '/Users/macbookpro/Desktop/dev/trendy/examples/arquivo-oc.csv'
 
 
 if __name__ == '__main__':
