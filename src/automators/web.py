@@ -230,7 +230,8 @@ class Web:
         table = []
         for line in parsed_table:
             if type(expected_cols) == int:
-                expected_cols = lambda l: len(l) == expected_cols
+                _ = expected_cols
+                expected_cols = lambda l: len(l) == _
             if not expected_cols(line):
                 raise Exception(f"Table has not the expected cols number at all lines")
             table.append([self.totvs_table_helper(col) for col in line])
