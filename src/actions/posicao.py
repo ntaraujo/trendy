@@ -20,18 +20,18 @@ class Posicao(RedeAction):
             from datetime import datetime
             from utils import datetime_to_simple
 
-            this_month = datetime.now().month
-            this_year = datetime.now().year
+            month = datetime.now().month + 1
+            year = datetime.now().year
 
-            for _ in range(3):
-                new_date = datetime_to_simple(datetime(this_year, this_month, 3))
+            for _ in range(4):
+                new_date = datetime_to_simple(datetime(year, month, 3))
                 msg(f'Data a ser procurada: {new_date}')
                 self.prevs_emb.insert(0, new_date)
-                if this_month == 1:
-                    this_month = 12
-                    this_year -= 1
+                if month == 1:
+                    month = 12
+                    year -= 1
                 else:
-                    this_month -= 1
+                    month -= 1
 
         if not self.web.opened:
             self.web.open()
