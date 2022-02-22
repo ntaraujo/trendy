@@ -140,15 +140,18 @@ def action_to_json(action, widget, options):
 argparse_to_json.action_to_json = action_to_json
 
 
-def retry(func, times=3, wait=1):
-    if debugger_active:
+def retry(func, exc=None, times=3, wait=1, on_debug=False):
+    if not on_debug and debugger_active:
         return func
+    
+    if exc is None:
+        exc = Exception
 
     def new_func(*args, **kwargs):
         for _ in range(times):
             try:
                 return func(*args, **kwargs)
-            except Exception as e:
+            except exc as e:
                 msg(f"Erro suprimido. Tentando novamente\n{type(e).__name__}\n{e}")
                 sleep(wait)
         return func(*args, **kwargs)
@@ -225,18 +228,6 @@ def common_start(*strings):
     return ''.join(_iter())
 
 
-def insort(_list, n, key=None):
-    if key is None:
-        def key(el):
-            return el > n
-  
-    for index, el in enumerate(_list):
-      if key(el):
-        break
-  
-    _list.insert(index, n)
-
-
 class ExampleArgs:
     cods_cliente = """969611
 1000560
@@ -254,6 +245,7 @@ class ExampleArgs:
     oc = '4500655584'
     romaneio_inicio = '/Users/macbookpro/Desktop/dev/trendy/examples/romaneio-inicio.xls'
     arquivo_oc = '/Users/macbookpro/Desktop/dev/trendy/examples/arquivo-oc.csv'
+    arquivo_wgpd513 = '/Users/macbookpro/Desktop/dev/trendy/examples/wgpd513.xlsx'
 
 
 if __name__ == '__main__':
