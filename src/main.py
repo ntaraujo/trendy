@@ -109,6 +109,14 @@ def main():
     argument(romaneio_basic_group, 'senha_totvs', widget='PasswordField', help="A senha de acesso ao TOTVS")
 
 
+    pedido_aberto_parser = sub_parser('PedidoAberto')
+
+    pedido_aberto_basic_group = group(pedido_aberto_parser, 'Básico', gooey_options={'columns': 1})
+    argument(pedido_aberto_basic_group, 'arquivo_wgpd513', widget='FileChooser', help='Arquivo gerado pelo relatório do TOTVS wgpd513')
+    argument(pedido_aberto_basic_group, 'dinamica', widget='FileChooser',
+             help='A dinâmica é o arquivo com os códigos e nomes de cada cliente')
+
+
     args = parser.parse_args()
     cache['default'] = {key: str(value) for key, value in args.__dict__.items()}
     args.__dict__ = {key: None if value == 'X' else value.strip() for key, value in args.__dict__.items()}
@@ -148,6 +156,9 @@ def main():
     elif args.action == 'RomaneioCompleto':
         from actions.romaneio_completo import RomaneioCompleto
         run(RomaneioCompleto)
+    elif args.action == 'PedidoAberto':
+        from actions.pedido_aberto import PedidoAberto
+        run(PedidoAberto)
 
 
 if __name__ == '__main__':
