@@ -99,10 +99,16 @@ class Excel:
         self.run("center_selected")
 
     @staticmethod
-    def color(cells, r, g, b):
+    def font_color(cells, r, g, b):
         msg("Células com fonte colorida")
 
         cells.font.color = (r, g, b)
+
+    @staticmethod
+    def color(cells, r, g, b):
+        msg("Células coloridas")
+
+        cells.color = (r, g, b)
 
     @scheduled
     def new_sheet(self, name=None):

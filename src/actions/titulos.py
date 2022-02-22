@@ -57,7 +57,7 @@ class Titulos(RedeAction):
         self.excel.on_back_range(
             2, 9,
             self.excel.center,
-            (self.excel.color, (255, 0, 0))
+            (self.excel.font_color, (255, 0, 0))
         )
 
         self.excel.insert(table[2:])

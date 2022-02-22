@@ -73,7 +73,7 @@ class Posicao(RedeAction):
             1, 10,
             self.excel.bold,
             self.excel.center,
-            (self.excel.color, (255, 0, 0)),
+            (self.excel.font_color, (255, 0, 0)),
             self.excel.merge_across
         )
 
