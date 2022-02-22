@@ -162,14 +162,19 @@ class Excel:
     
     @staticmethod
     def xls_color(cell, rgb):
+        msg("Célula colorida")
+
         cell.fill = xls_pattern_fill(patternType='solid', fgColor=xls_color(rgb=rgb))
     
     @staticmethod
     def xls_bold(cell):
+        msg("Célula em negrito")
+
         cell.font = xls_font(bold=True)
     
     @staticmethod
     def xls_thin_border(cell):
+        msg("Célula com todas as bordas finas")
         cell.border = xls_border(
             left=xls_side(border_style=xls_border_thin, color='00000000'),
             right=xls_side(border_style=xls_border_thin, color='00000000'),
@@ -251,6 +256,8 @@ class Excel:
     
     @scheduled
     def assign(self, cell_ref, value):
+        msg("Atribuindo valor à célula")
+        
         self.file.sheets.active.range(cell_ref).value = value
 
 
