@@ -5,7 +5,13 @@ if __name__ == '__main__':
 
     sys_path.insert(0, local_resource_path(""))
 
-from utils import compiled, msg, global_path, scheduled, open
+from utils import msg, global_path, scheduled, open
+from openpyxl.styles.colors import Color as xls_color
+from openpyxl.styles.fills import PatternFill as xls_pattern_fill
+from openpyxl.styles import Font as xls_font
+from openpyxl.styles.borders import Border as xls_border
+from openpyxl.styles.borders import Side as xls_side
+from openpyxl.styles.borders import BORDER_THIN as xls_border_thin
 
 
 class Excel:
@@ -142,13 +148,56 @@ class Excel:
                 yield [row[return_col - 1] for return_col in return_cols]
     
     @staticmethod
-    def xls_workbook(file_path):
+    def xls_workbook(file_path=None):
         msg(f'Abrindo "{file_path}"')
         
-        from openpyxl import load_workbook
+        if file_path:
+            from openpyxl import load_workbook
 
-        return load_workbook(file_path)
+            return load_workbook(file_path)
+        else:
+            from openpyxl import Workbook
 
+            return Workbook()
+    
+    @staticmethod
+    def xls_color(cell, rgb):
+        cell.fill = xls_pattern_fill(patternType='solid', fgColor=xls_color(rgb=rgb))
+    
+    @staticmethod
+    def xls_bold(cell):
+        cell.font = xls_font(bold=True)
+    
+    @staticmethod
+    def xls_thin_border(cell):
+        cell.border = xls_border(
+            left=xls_side(border_style=xls_border_thin, color='00000000'),
+            right=xls_side(border_style=xls_border_thin, color='00000000'),
+            top=xls_side(border_style=xls_border_thin, color='00000000'),
+            bottom=xls_side(border_style=xls_border_thin, color='00000000')
+        )
+    
+    @staticmethod
+    def xls_on_back_range(sheet, rows, columns, *cell_actions):
+        msg("Ações nas últimas linhas")
+
+        max_row = sheet.max_row
+        
+        for cell_action in cell_actions:
+            if type(cell_action) == tuple:
+                args = cell_action[1]
+                if len(cell_action) == 3:
+                    kwargs = cell_action[2]
+                else:
+                    kwargs = {}
+                cell_action = cell_action[0]
+            else:
+                args = []
+                kwargs = {}
+            
+            for r in range(rows):
+                for c in range(columns):
+                    cell_action(sheet.cell(max_row-r, c+1), *args, **kwargs)
 
     @staticmethod
     def csv_file_vertical_search(value, file_or_path, lookup_col, *return_cols):
