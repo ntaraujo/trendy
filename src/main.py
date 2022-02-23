@@ -5,7 +5,7 @@ from gooey import Gooey, GooeyParser, local_resource_path
 from automators.web import Web
 from automators.excel import Excel
 import signal
-from utils import cache, save_cache, load_cache, msg, compiled, run_scheduled, log_file
+from utils import data, save_data, load_data, msg, compiled, run_scheduled, log_file
 
 # TODO separate classes: ExcelWriter and ExcelReader
 # TODO separate classes: WebWriter and WebReader
@@ -38,14 +38,14 @@ excel = Excel()
     }
 )
 def main():
-    load_cache()
+    load_data()
 
     parser = GooeyParser(description="Escreva um X nos campos que não devem ser usados")
     subs = parser.add_subparsers(dest='action')
 
     def argument(group_, name, **kwargs):
-        cache_name = name.replace('--', '')
-        default = cache['default'].get(cache_name, 'X')
+        data_name = name.replace('--', '')
+        default = data['default'].get(data_name, 'X')
         if default == 'None':
             default = 'X'
         group_.add_argument(name, default=default, **kwargs)
@@ -120,10 +120,20 @@ def main():
     argument(pedido_aberto_basic_group, 'dinamica', widget='FileChooser',
              help='A dinâmica é o arquivo com os códigos e nomes de cada cliente')
 
+    opcoes_parser = sub_parser('Opções')
+
+    opcoes_group = opcoes_parser.add_mutually_exclusive_group(required=True)
+    opcoes_group.add_argument('--abrir_pasta', dest='Abrir pasta do aplicativo', action="store_true",
+                              help="A pasta contém arquivos de template, temporários, de configuração, etc.")
+    opcoes_group.add_argument('--limpar_cache', dest='Apagar o cache', action="store_true",
+                              help="Apagar arquivos temporários")
+    opcoes_group.add_argument('--limpar_dados', dest='Apagar meus dados', action="store_true",
+                              help="Apagar todos os arquivos usados, presentes na pasta do aplicativo")
+
     args = parser.parse_args()
-    cache['default'] = {key: str(value) for key, value in args.__dict__.items()}
-    args.__dict__ = {key: None if value == 'X' else value.strip() for key, value in args.__dict__.items()}
-    save_cache()
+    data['default'] = {key: str(value) for key, value in args.__dict__.items()}
+    args.__dict__ = {key: None if value == 'X' else value for key, value in args.__dict__.items()}
+    save_data()
 
     def run(action):
         try:
@@ -162,6 +172,9 @@ def main():
     elif args.action == 'PedidoAberto':
         from actions.pedido_aberto import PedidoAberto
         run(PedidoAberto)
+    elif args.action == 'Opções':
+        from actions.opcoes import Opcoes
+        run(Opcoes)
 
 
 if __name__ == '__main__':

@@ -1,15 +1,16 @@
-from collections import deque
-import locale
-from gooey.python_bindings import argparse_to_json
-import appdirs
-import os
-import sys
 import configparser
+import locale
+import os
 import shutil
-from time import sleep
+import sys
+from collections import deque
 from filecmp import cmp as filecmp
-from gooey import local_resource_path
+from time import sleep
+
+import appdirs
 import chardet
+from gooey import local_resource_path
+from gooey.python_bindings import argparse_to_json
 
 default_open = open
 
@@ -30,12 +31,25 @@ def open(*args, **kwargs):
     return default_open(*args, **kwargs)
 
 
-data_dir_path = os.path.join(appdirs.user_data_dir(), "Trendy")
+app_dir_path = os.path.join(appdirs.user_data_dir(), "Trendy")
 
-if not os.path.exists(data_dir_path):
-    os.mkdir(data_dir_path)
+if not os.path.exists(app_dir_path):
+    os.mkdir(app_dir_path)
 
-log_file = open(os.path.join(data_dir_path, 'last-log.txt'), 'w', encoding='utf-8')
+cache_dir_path = os.path.join(app_dir_path, "cache")
+
+if not os.path.exists(cache_dir_path):
+    os.mkdir(cache_dir_path)
+
+
+def system_remove(what):
+    try:
+        os.remove(what)
+    except:
+        shutil.rmtree(what, ignore_errors=True)
+
+
+log_file = open(os.path.join(app_dir_path, 'last-log.txt'), 'w', encoding='utf-8')
 
 locale.setlocale(locale.LC_TIME, 'pt_BR.UTF-8')
 
@@ -194,29 +208,29 @@ def retry(func, exc=None, times=3, wait=1, on_debug=False):
     return new_func
 
 
-cache = configparser.ConfigParser()
-cache['default'] = {}
-cache_file_path = os.path.join(appdirs.user_cache_dir(), 'trendy_cache.ini')
+data = configparser.ConfigParser()
+data['default'] = {}
+data_file_path = os.path.join(app_dir_path, 'data.ini')
 
 
-def save_cache():
-    msg(f'Salvando cache em "{cache_file_path}"')
+def save_data():
+    msg(f'Salvando dados em "{data_file_path}"')
 
-    with open(cache_file_path, 'w', encoding='utf-8') as cache_file:
-        cache.write(cache_file)
+    with open(data_file_path, 'w', encoding='utf-8') as data_file:
+        data.write(data_file)
 
 
-def load_cache():
-    msg(f'Carregando cache de "{cache_file_path}"')
+def load_data():
+    msg(f'Carregando dados de "{data_file_path}"')
 
-    if os.path.exists(cache_file_path):
-        cache.read(cache_file_path, encoding='utf-8')
+    if os.path.exists(data_file_path):
+        data.read(data_file_path, encoding='utf-8')
 
 
 def global_path(local_path, basename=None):
     local_path = local_resource_path(local_path)
     basename = basename or os.path.basename(local_path)
-    path = os.path.join(data_dir_path, basename)
+    path = os.path.join(app_dir_path, basename)
     if os.path.exists(path) and not filecmp(local_path, path):
         msg(f'Atualizando arquivo em "{path}"')
         os.remove(path)
@@ -267,6 +281,18 @@ def common_start(*strings):
     return ''.join(_iter())
 
 
+def system_open(what):
+    import subprocess
+    import platform
+
+    if platform.system() == 'Darwin':
+        subprocess.call(('open', what))
+    elif platform.system() == 'Windows':
+        os.startfile(what)
+    else:
+        subprocess.call(('xdg-open', what))
+
+
 class ExampleArgs:
     cods_cliente = """969611
 1000560
@@ -285,6 +311,9 @@ class ExampleArgs:
     romaneio_inicio = '/Users/macbookpro/Desktop/dev/trendy/examples/romaneio-inicio.xls'
     arquivo_oc = '/Users/macbookpro/Desktop/dev/trendy/examples/arquivo-oc.csv'
     arquivo_wgpd513 = '/Users/macbookpro/Desktop/dev/trendy/examples/wgpd513.xlsx'
+    abrir_pasta = True
+    limpar_cache = True
+    limpar_dados = True
 
 
 if __name__ == '__main__':

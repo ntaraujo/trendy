@@ -48,14 +48,14 @@ class Web:
 
     def print(self, basename):
         from Screenshot import Screenshot_Clipping
-        from utils import data_dir_path
+        from utils import app_dir_path
         from os import path
 
-        msg(f'Tirando um print do erro. Salvando em "{data_dir_path}"')
+        msg(f'Tirando um print do erro. Salvando em "{app_dir_path}"')
 
         ss = Screenshot_Clipping.Screenshot()
-        ss.full_Screenshot(self.driver, save_path=data_dir_path, image_name=basename)
-        return path.join(data_dir_path, basename)
+        ss.full_Screenshot(self.driver, save_path=app_dir_path, image_name=basename)
+        return path.join(app_dir_path, basename)
 
     def prepare_for_new_window(self):
         msg("Preparando para nova janela")
