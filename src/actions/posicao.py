@@ -8,7 +8,7 @@ if __name__ == '__main__':
     sys_path.insert(0, local_resource_path(""))
 
 from actions.base_action import RedeAction
-from utils import msg, pasted_to_list, retry, run_scheduled, capitalized_month, simple_to_datetime
+from utils import msg, pasted_to_list, retry, run_scheduled, capitalized_month, simple_to_datetime, progress
 
 
 class Posicao(RedeAction):
@@ -32,6 +32,8 @@ class Posicao(RedeAction):
                     year -= 1
                 else:
                     month -= 1
+
+        self.make_sheet_value = len(self.prevs_emb)
 
         if not self.web.opened:
             self.web.open()
@@ -78,6 +80,8 @@ class Posicao(RedeAction):
         )
 
         for prev_emb in self.prevs_emb:
+            progress()
+
             self.web.totvs_fav_pedidos_fill(cod_cliente, prev_emb, "01012000")
             table = self.filter_table(self.web.totvs_fav_pedidos_complete_table())
 
