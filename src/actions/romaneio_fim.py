@@ -8,7 +8,7 @@ if __name__ == '__main__':
     sys_path.insert(0, local_resource_path(""))
 
 from actions.base_action import BaseAction
-from utils import run_scheduled, global_path
+from utils import run_scheduled, global_path, progress, total_progress
 import utils
 
 utils.running_scheduled = True
@@ -17,17 +17,25 @@ utils.running_scheduled = True
 class RomaneioFim(BaseAction):
     def __init__(self, args, web, excel):
         super().__init__(args, web, excel)
-    
-        arquivo_oc = list(self.excel.get_csv_reader(self.args.arquivo_oc, reader_kwargs={"delimiter": ";"}))
+
+        arquivo_oc_start_at = 1
+        arquivo_oc = list(
+            self.excel.get_csv_reader(self.args.arquivo_oc, reader_kwargs={"delimiter": ";"})
+        )[arquivo_oc_start_at:]
         material_ind = 2
         oc_ind = 0
-        arquivo_oc_start_at = 1
 
-        arquivo_oc_dict = {line[7].strip()+line[10].strip(): line for line in arquivo_oc[arquivo_oc_start_at:]}
+        total_progress(len(arquivo_oc) + 87 * 2 + 4)
+
+        arquivo_oc_dict = {progress(line[7].strip)()+line[10].strip(): line for line in arquivo_oc}
 
         self.excel.open_app()
         self.excel.open(global_path(self.args.romaneio_inicio))
-        cod_refs = [cod[:10].strip() for cod in self.excel.file.sheets.active.range('C14:C100').value if cod]
+        cod_refs = [
+            cod[:10].strip() for cod in self.excel.file.sheets.active.range('C14:C100').value if progress() or cod
+        ]
+
+        total_progress(len(cod_refs) - 87)
 
         materials = []
         ocs = []
@@ -36,6 +44,7 @@ class RomaneioFim(BaseAction):
             o, _, m = arquivo_oc_dict[cod_ref][oc_ind:material_ind+1]
             materials.append((m,))
             ocs.append((o,))
+            progress()
 
         self.excel.assign('D14', materials)
         self.excel.assign('K14', ocs)
