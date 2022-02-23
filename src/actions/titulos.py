@@ -8,12 +8,13 @@ if __name__ == '__main__':
     sys_path.insert(0, local_resource_path(""))
 
 from actions.base_action import RedeAction
-from utils import msg, run_scheduled
+from utils import msg, run_scheduled, progress
 
 
 class Titulos(RedeAction):
     def __init__(self, args, web, excel):
         super().__init__(args, web, excel)
+        self.make_sheet_value = 7
 
         if not self.web.opened:
             self.web.open()
@@ -52,10 +53,14 @@ class Titulos(RedeAction):
         msg(f'Construindo o Relatório de Títulos da loja "{nome_cliente}"')
 
         self.web.totvs_fav_clientes_va_para(cod_cliente)
+        progress()
         main_window = self.web.totvs_fav_clientes_documentos(cod_cliente)
+        progress()
         self.web.totvs_fav_clientes_filtro()
+        progress()
 
         table = self.filter_table(self.web.totvs_fav_clientes_complete_table())
+        progress()
 
         self.excel.insert(table[:2])
         self.excel.on_back_range(
@@ -63,17 +68,20 @@ class Titulos(RedeAction):
             self.excel.center,
             (self.excel.font_color, (255, 0, 0))
         )
+        progress()
 
         self.excel.insert(table[2:])
         self.excel.on_back_range(
             len(table) - 1, 9,
             self.excel.center
         )
+        progress()
 
         self.excel.run("titulos_general_format")
 
         self.web.driver.close()
         self.web.driver.switch_to.window(main_window)
+        progress()
 
 
 if __name__ == '__main__':
