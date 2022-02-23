@@ -8,7 +8,7 @@ if __name__ == '__main__':
     sys_path.insert(0, local_resource_path(""))
 
 from actions.base_action import WebToExcelAction
-from utils import run_scheduled, common_start, global_path
+from utils import run_scheduled, common_start, global_path, total_progress, progress
 import re
 
 
@@ -38,16 +38,17 @@ class RomaneioInicio(WebToExcelAction):
         self.web.totvs_fav_program_access(3, 16)
         self.web.totvs_fav_notas_va_para(estabelecimento, serie, nf)
         self.web.totvs_fav_notas_items(nf)
-        nf_itens = self.web.totvs_fav_notas_complete_table()
-        desc_ind = 2
-        preco_ind = 5
+
         nf_itens_start_at = 2
         nf_itens_end_at = -1
+        nf_itens = self.web.totvs_fav_notas_complete_table()[nf_itens_start_at:nf_itens_end_at]
+        desc_ind = 2
+        preco_ind = 5
 
-        nf_itens_dict = {line[1].strip()[:10]: line for line in nf_itens[nf_itens_start_at:nf_itens_end_at]}
-        descs = [
-            re.match(r'(.*) *[A-Z]+ *$', line[desc_ind])[1] for line in nf_itens[nf_itens_start_at:nf_itens_end_at]
-        ]
+        total_progress(len(cac) - cac_start_at + len(nf_itens) * 2 + 4)
+
+        nf_itens_dict = {progress(line[1].strip)()[:10]: line for line in nf_itens}
+        descs = [progress(re.match)(r'(.*) *[A-Z]+ *$', line[desc_ind])[1] for line in nf_itens]
         desc = common_start(*descs).strip()
 
         table = []
@@ -61,13 +62,18 @@ class RomaneioInicio(WebToExcelAction):
             preco = nf_itens_dict[cod_ref][preco_ind].strip()
 
             table.append((cod, None, desc, cor, tam, qtd, preco))
+            progress()
         
         self.excel.open_app()
         self.excel.open(global_path("resources/romaneio.xls"))
+        progress()
 
         self.excel.assign('D9', cnpj)
+        progress()
         self.excel.assign('G8', [[nf], [serie]])
+        progress()
         self.excel.assign('C14', table)
+        progress()
 
         run_scheduled()
         self.web.close()
