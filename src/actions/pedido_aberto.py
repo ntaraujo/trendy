@@ -12,12 +12,15 @@ from utils import run_scheduled, data_dir_path
 from sortedcontainers import SortedDict
 import os
 
+
 class PedidoAberto(BaseAction):
     def __init__(self, args, web, excel):
         super().__init__(args, web, excel)
 
         table_dict = SortedDict()
-        cod_dict = {str(row[10]).strip(): row for row in self.excel.xls_workbook(self.args.dinamica).active.values if row[10]}
+        cod_dict = {
+            str(row[10]).strip(): row for row in self.excel.xls_workbook(self.args.dinamica).active.values if row[10]
+        }
         arquivo_iter = self.excel.xls_workbook(self.args.arquivo_wgpd513).active.values
         next(arquivo_iter)
 
@@ -41,17 +44,24 @@ class PedidoAberto(BaseAction):
                 table_dict[vend][rede] = SortedDict()
             if fantasia not in table_dict[vend][rede]:
                 table_dict[vend][rede][fantasia] = []
-            new = [col for i, col in enumerate(row) if i in (1, 3, 4, 5, 14, 28, 31, 33, 34, 35, 38, 39, 41, 42, 44, 45, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56)]
+            new = [col for i, col in enumerate(row) if i in (
+                1, 3, 4, 5, 14, 28, 31, 33, 34, 35, 38, 39, 41, 42, 44, 45, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56
+            )]
             table_dict[vend][rede][fantasia].append(new[:3] + [rede, fantasia] + new[3:])
 
-        title = ["Vend",	"Nr. Pedido",	"Cód. Cliente",	"REDE",	"FANTASIA",	"Razão Social",	"Situação",	"Cod. Produção",	"Ordem Compra",	"Prev. Fat",	"Emis. Nff",	"Nr. Nota",	"Qtde",	 "Vlr. Líq.", 	"Descrição Item",	"Descrição Cor",	"Vlr. Unit.",	"CCF",	"Prazo Adicional Pedido",	"Prazo Adicional Dias NF",	"#Acordo Comercial - 1 e 700",	"#Comercialização E-commerce",	"#Condição Pagamento",	"#Desc.Cliente",	"#Desconto item",	"#MELISSA - Franquias",	"#Melissa Item B2B",	"#Pontualidade NF"]
-        blank = [None,      None,           None,           None,   None,       None,           None,       None,               None,           None,           None,           None,       None,    None,          None,               None,               None,           None,   None,                       None,                       None,                           None,                           None,                   None,               None,               None,                   None,                   None]
+        title = [
+            "Vend", "Nr. Pedido", "Cód. Cliente", "REDE", "FANTASIA", "Razão Social", "Situação", "Cod. Produção",
+            "Ordem Compra", "Prev. Fat", "Emis. Nff", "Nr. Nota", "Qtde", "Vlr. Líq.", "Descrição Item",
+            "Descrição Cor", "Vlr. Unit.", "CCF", "Prazo Adicional Pedido", "Prazo Adicional Dias NF",
+            "#Acordo Comercial - 1 e 700", "#Comercialização E-commerce", "#Condição Pagamento", "#Desc.Cliente",
+            "#Desconto item", "#MELISSA - Franquias", "#Melissa Item B2B", "#Pontualidade NF"
+        ]
+        blank = [None for _ in range(28)]
 
         pedido = self.excel.xls_workbook()
 
         sheet = pedido.active
 
-        row_total_start = 1
         row_total_end = 1
 
         for vend in table_dict.values():
@@ -68,7 +78,7 @@ class PedidoAberto(BaseAction):
                         # qt_count += int(row[12])
                         # vl = row[13]
                         # vl_count += vl if type(vl) in (float, int) else float(vl.replace('.', '').replace(',', '.'))
-                    
+
                     row_total_end = sheet.max_row
 
                     total = blank.copy()
@@ -81,7 +91,7 @@ class PedidoAberto(BaseAction):
                     sheet.append(blank)
 
                     row_total_end += 3
-        
+
         temp_path = os.path.join(data_dir_path, "temp-excel.xlsx")
         pedido.save(temp_path)
 

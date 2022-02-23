@@ -27,7 +27,7 @@ class Titulos(RedeAction):
 
         run_scheduled()
         self.web.close()
-    
+
     @staticmethod
     def filter_table(complete_table):
         msg("Filtrando tabelas")
@@ -36,14 +36,18 @@ class Titulos(RedeAction):
         vl_count = 0
         for line in complete_table[1:]:
             if "AN" not in line[2] and "SIM" in line[7]:
-                table.append([cell for index, cell in enumerate(line) if index not in (0, 6, 7, 8, 9, 10, 11, 12, 14, 15)])
+                table.append(
+                    [cell for index, cell in enumerate(line) if index not in (0, 6, 7, 8, 9, 10, 11, 12, 14, 15)])
                 vl_count += float(line[13].replace('.', '').replace(',', '.'))
         table = sorted(table, key=lambda x: float(x[-1]), reverse=True)
-        #                0      1         2      3        4            5      6      7          8        9              10                11             12                  13                                                      14             15                16         17         18
-        table.insert(0, [       'TOTAL',  None,  None,    None,        None,                                                                                                 f'{vl_count:_.2f}'.replace('.', ',').replace('_', '.'),                                  None,      None,      None  ])
-        table.insert(0, [       'Est',    'Esp', 'Série', 'Documento', '/P',                                                                                                 'Total Saldo',                                                                           'Emissão', 'Dt Vcto', 'Dias'])
+        table.insert(0, [
+            'TOTAL', None, None, None, None, f'{vl_count:_.2f}'.replace('.', ',').replace('_', '.'), None, None, None
+        ])
+        table.insert(0, [
+            'Est', 'Esp', 'Série', 'Documento', '/P', 'Total Saldo', 'Emissão', 'Dt Vcto', 'Dias'
+        ])
         return table
-    
+
     def make_sheet(self, cod_cliente, nome_cliente):
         msg(f'Construindo o Relatório de Títulos da loja "{nome_cliente}"')
 
@@ -62,7 +66,7 @@ class Titulos(RedeAction):
 
         self.excel.insert(table[2:])
         self.excel.on_back_range(
-            len(table)-1, 9,
+            len(table) - 1, 9,
             self.excel.center
         )
 

@@ -13,6 +13,7 @@ import chardet
 
 default_open = open
 
+
 def encoding_of(file_path):
     if not os.path.exists(file_path):
         return 'utf-8'
@@ -21,11 +22,13 @@ def encoding_of(file_path):
         result = chardet.detect(rawdata.read(100000))['encoding']
     return 'utf-8' if result == 'ascii' else result
 
+
 def open(*args, **kwargs):
     if len(args) < 4 and 'encoding' not in kwargs:
         kwargs['encoding'] = encoding_of(args[0] if args else kwargs['file'])
 
     return default_open(*args, **kwargs)
+
 
 data_dir_path = os.path.join(appdirs.user_data_dir(), "Trendy")
 
@@ -43,7 +46,7 @@ def msg(text):
     log_file.write(text + '\n')
 
 
-debugger_active = getattr(sys, 'gettrace', lambda : None)() is not None
+debugger_active = getattr(sys, 'gettrace', lambda: None)() is not None
 if debugger_active:
     msg("Rodando em modo de depuração")
 
@@ -143,7 +146,7 @@ argparse_to_json.action_to_json = action_to_json
 def retry(func, exc=None, times=3, wait=1, on_debug=False):
     if not on_debug and debugger_active:
         return func
-    
+
     if exc is None:
         exc = Exception
 
@@ -195,11 +198,13 @@ compiled = getattr(sys, 'frozen', False)
 scheduled_call_queue = deque()
 running_scheduled = False
 
+
 def schedule(function, *args, **kwargs):
     if running_scheduled or not compiled:
         function(*args, **kwargs)
     else:
         scheduled_call_queue.append((function, args, kwargs))
+
 
 def run_scheduled():
     global running_scheduled
@@ -209,9 +214,11 @@ def run_scheduled():
     scheduled_call_queue.clear()
     running_scheduled = False
 
+
 def scheduled(function):
     def new_function(*args, **kwargs):
         schedule(function, *args, **kwargs)
+
     return new_function
 
 
