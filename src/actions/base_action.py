@@ -1,4 +1,4 @@
-from utils import pasted_to_list, msg, ExampleArgs
+from utils import pasted_to_list, msg, ExampleArgs, total_progress
 from automators.web import Web
 from automators.excel import Excel
 
@@ -26,6 +26,7 @@ class WebToExcelAction(BaseAction):
 class RedeAction(WebToExcelAction):
     def __init__(self, args, web, excel):
         super().__init__(args, web, excel)
+        self.make_sheet_value = 1
 
         self.cods_clientes = pasted_to_list(self.args.cods_cliente or '')
         self.nomes_clientes = pasted_to_list(self.args.nomes_cliente or '')
@@ -49,6 +50,8 @@ class RedeAction(WebToExcelAction):
         self.excel.open_app()
         self.excel.open_macros()
         self.excel.open()
+
+        total_progress(max(len(self.cods_clientes), len(self.nomes_clientes)) * self.make_sheet_value)
 
         for cod_cliente, nome_cliente in zip(self.cods_clientes, self.nomes_clientes):
             self.excel.new_sheet(nome_cliente)
