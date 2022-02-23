@@ -46,6 +46,35 @@ def msg(text):
     log_file.write(text + '\n')
 
 
+_current_progress = 0
+_total_progress = 0
+
+
+def total_progress(number=None):
+    global _total_progress
+
+    if number is None:
+        global _current_progress
+
+        _current_progress = 0
+        _total_progress = 0
+    else:
+        _total_progress += number
+
+
+def progress(func=None):
+    def _progress():
+        global _current_progress
+        _current_progress += 1
+        print(f'Progresso: {_current_progress}/{_total_progress}')
+
+    def new_func(*args, **kwargs):
+        _progress()
+        return func(*args, **kwargs)
+
+    return new_func if func else _progress()
+
+
 debugger_active = getattr(sys, 'gettrace', lambda: None)() is not None
 if debugger_active:
     msg("Rodando em modo de depuração")

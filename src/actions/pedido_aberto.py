@@ -8,7 +8,7 @@ if __name__ == '__main__':
     sys_path.insert(0, local_resource_path(""))
 
 from actions.base_action import BaseAction
-from utils import run_scheduled, data_dir_path
+from utils import run_scheduled, data_dir_path, total_progress, progress
 from sortedcontainers import SortedDict
 import os
 
@@ -17,14 +17,29 @@ class PedidoAberto(BaseAction):
     def __init__(self, args, web, excel):
         super().__init__(args, web, excel)
 
+        dinamica_sheet = self.excel.xls_workbook(self.args.dinamica).active
+        len_dinamica = dinamica_sheet.max_row
+
+        arquivo_sheet = self.excel.xls_workbook(self.args.arquivo_wgpd513).active
+        len_arquivo = arquivo_sheet.max_row
+
+        total_progress(len_dinamica + 2 * len_arquivo)
+
         table_dict = SortedDict()
+
         cod_dict = {
-            str(row[10]).strip(): row for row in self.excel.xls_workbook(self.args.dinamica).active.values if row[10]
+            progress(str)(row[10]).strip(): row for row in dinamica_sheet.values if row[10]
         }
-        arquivo_iter = self.excel.xls_workbook(self.args.arquivo_wgpd513).active.values
+
+        arquivo_iter = arquivo_sheet.values
         next(arquivo_iter)
+        progress()
+
+        len_table_dict = 0
 
         for row in arquivo_iter:
+            progress()
+
             if not row or not any(row):
                 break
 
@@ -48,6 +63,9 @@ class PedidoAberto(BaseAction):
                 1, 3, 4, 5, 14, 28, 31, 33, 34, 35, 38, 39, 41, 42, 44, 45, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56
             )]
             table_dict[vend][rede][fantasia].append(new[:3] + [rede, fantasia] + new[3:])
+            len_table_dict += 1
+
+        total_progress(len_table_dict - len_arquivo)
 
         title = [
             "Vend", "Nr. Pedido", "Cód. Cliente", "REDE", "FANTASIA", "Razão Social", "Situação", "Cod. Produção",
@@ -74,6 +92,7 @@ class PedidoAberto(BaseAction):
                     # qt_count = 0
                     # vl_count = 0
                     for row in fantasia:
+                        progress()
                         sheet.append(row)
                         # qt_count += int(row[12])
                         # vl = row[13]

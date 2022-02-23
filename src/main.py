@@ -28,7 +28,14 @@ excel = Excel()
     advanced=True,
     tabbed_groups=True,
     # requires_shell=False,  # not working on mac
-    clear_before_run=True
+    clear_before_run=True,
+    progress_regex=r"^Progresso: (?P<current>\d+)/(?P<total>\d+)$",
+    progress_expr="current / total * 100",
+    hide_progress_msg=True,
+    timing_options={
+        'show_time_remaining': True,
+        'hide_time_remaining_on_complete': False,
+    }
 )
 def main():
     load_cache()
