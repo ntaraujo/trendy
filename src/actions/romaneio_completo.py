@@ -45,7 +45,9 @@ class RomaneioCompleto(WebToExcelAction):
         nf_itens_end_at = -1
 
         nf_itens_dict = {line[1].strip()[:10]: line for line in nf_itens[nf_itens_start_at:nf_itens_end_at]}
-        descs = [re.match(r'(.*) *[A-Z]+ *$', line[desc_ind])[1] for line in nf_itens[nf_itens_start_at:nf_itens_end_at]]
+        descs = [
+            re.match(r'(.*) *[A-Z]+ *$', line[desc_ind])[1] for line in nf_itens[nf_itens_start_at:nf_itens_end_at]
+        ]
         desc = common_start(*descs).strip()
 
         oc = self.args.oc

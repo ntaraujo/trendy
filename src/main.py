@@ -49,7 +49,6 @@ def main():
     def group(parser_, name, **kwargs):
         return parser_.add_argument_group(name, **kwargs)
 
-
     posicao_parser = sub_parser('Posição')
 
     posicao_basic_group = group(posicao_parser, 'Básico', gooey_options={'columns': 1})
@@ -68,7 +67,6 @@ def main():
     argument(posicao_advanced_group, '--nomes_cliente', widget='Textarea', gooey_options={'height': 100},
              help="Os respectivos nomes para cada cliente, separados por ENTER")
 
-
     titulos_parser = sub_parser('Títulos')
 
     titulos_basic_group = group(titulos_parser, 'Básico', gooey_options={'columns': 1})
@@ -85,20 +83,19 @@ def main():
     argument(titulos_advanced_group, '--nomes_cliente', widget='Textarea', gooey_options={'height': 100},
              help="Os respectivos nomes para cada cliente, separados por ENTER")
 
-
     romaneio1_parser = sub_parser('RomaneioInício')
 
     romaneio1_basic_group = group(romaneio1_parser, 'Básico', gooey_options={'columns': 1})
     argument(romaneio1_basic_group, 'cac', widget='FileChooser', help='Arquivo CAC no formato .csv')
     argument(romaneio1_basic_group, 'senha_totvs', widget='PasswordField', help="A senha de acesso ao TOTVS")
 
-
     romaneio2_parser = sub_parser('RomaneioFim')
 
     romaneio2_basic_group = group(romaneio2_parser, 'Básico', gooey_options={'columns': 1})
-    argument(romaneio2_basic_group, 'romaneio_inicio', widget='FileChooser', help='Arquivo gerado pela ação RomaneioInício')
-    argument(romaneio2_basic_group, 'arquivo_oc', widget='FileChooser', help='Arquivo com a OC na primeira coluna em .csv (etiqueta)')
-
+    argument(romaneio2_basic_group, 'romaneio_inicio', widget='FileChooser',
+             help='Arquivo gerado pela ação RomaneioInício')
+    argument(romaneio2_basic_group, 'arquivo_oc', widget='FileChooser',
+             help='Arquivo com a OC na primeira coluna em .csv (etiqueta)')
 
     romaneio_parser = sub_parser('RomaneioCompleto')
 
@@ -108,14 +105,13 @@ def main():
     argument(romaneio_basic_group, 'etiqueta', widget='FileChooser', help='Arquivo da etiqueta no formato .csv')
     argument(romaneio_basic_group, 'senha_totvs', widget='PasswordField', help="A senha de acesso ao TOTVS")
 
-
     pedido_aberto_parser = sub_parser('PedidoAberto')
 
     pedido_aberto_basic_group = group(pedido_aberto_parser, 'Básico', gooey_options={'columns': 1})
-    argument(pedido_aberto_basic_group, 'arquivo_wgpd513', widget='FileChooser', help='Arquivo gerado pelo relatório do TOTVS wgpd513')
+    argument(pedido_aberto_basic_group, 'arquivo_wgpd513', widget='FileChooser',
+             help='Arquivo gerado pelo relatório do TOTVS wgpd513')
     argument(pedido_aberto_basic_group, 'dinamica', widget='FileChooser',
              help='A dinâmica é o arquivo com os códigos e nomes de cada cliente')
-
 
     args = parser.parse_args()
     cache['default'] = {key: str(value) for key, value in args.__dict__.items()}

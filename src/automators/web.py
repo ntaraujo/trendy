@@ -14,7 +14,6 @@ from time import sleep
 from lxml.etree import HTML
 
 
-
 class Web:
     def __init__(self):
         self.driver = None
@@ -46,7 +45,7 @@ class Web:
         msg("Fechando o navegador")
 
         self.driver.quit()
-    
+
     def print(self, basename):
         from Screenshot import Screenshot_Clipping
         from utils import data_dir_path
@@ -55,9 +54,9 @@ class Web:
         msg(f'Tirando um print do erro. Salvando em "{data_dir_path}"')
 
         ss = Screenshot_Clipping.Screenshot()
-        ss.full_Screenshot(self.driver, save_path=data_dir_path , image_name=basename)
+        ss.full_Screenshot(self.driver, save_path=data_dir_path, image_name=basename)
         return path.join(data_dir_path, basename)
-    
+
     def prepare_for_new_window(self):
         msg("Preparando para nova janela")
 
@@ -112,10 +111,12 @@ class Web:
     @retry
     def totvs_fav_program_access(self, type_col, program_line, in_title=None):
         WebDriverWait(self.driver, 30).until(
-            expected_conditions.element_to_be_clickable((By.CSS_SELECTOR, f".btn-selector-light:nth-child({type_col})")))
+            expected_conditions.element_to_be_clickable(
+                (By.CSS_SELECTOR, f".btn-selector-light:nth-child({type_col})")))
         self.driver.find_element(By.CSS_SELECTOR, f".btn-selector-light:nth-child({type_col})").click()
         WebDriverWait(self.driver, 30).until(
-            expected_conditions.element_to_be_clickable((By.CSS_SELECTOR, f".ng-scope:nth-child({program_line}) > .col-lg-5")))
+            expected_conditions.element_to_be_clickable(
+                (By.CSS_SELECTOR, f".ng-scope:nth-child({program_line}) > .col-lg-5")))
         program = self.driver.find_element(By.CSS_SELECTOR, f".ng-scope:nth-child({program_line}) > .col-lg-5")
         if in_title:
             assert in_title in program.text
@@ -127,17 +128,18 @@ class Web:
         self.driver.find_element(By.CSS_SELECTOR, ".btn-primary").click()
         new_window = self.get_new_window()
         self.driver.switch_to.window(new_window)
-    
+
     def switch_to_frame(self, name):
         WebDriverWait(self.driver, 30).until(expected_conditions.presence_of_element_located((By.NAME, name)))
         self.driver.switch_to.frame(self.driver.find_element(By.NAME, name))
-    
+
     @retry
     def totvs_va_para(self, **fields):
         msg("Abrindo janela para inserir dados")
-        
+
         self.switch_to_frame("Fr_panel")
-        WebDriverWait(self.driver, 30).until(expected_conditions.element_to_be_clickable((By.XPATH, "/html/body/table/tbody/tr/td/table/tbody/tr/td[5]/a")))
+        WebDriverWait(self.driver, 30).until(expected_conditions.element_to_be_clickable(
+            (By.XPATH, "/html/body/table/tbody/tr/td/table/tbody/tr/td[5]/a")))
         main_window = self.prepare_for_new_window()
         self.driver.find_element(By.XPATH, "/html/body/table/tbody/tr/td/table/tbody/tr/td[5]/a").click()
 
@@ -146,7 +148,7 @@ class Web:
         for field, value in fields.items():
             self.driver.find_element(By.NAME, field).send_keys(value)
         self.driver.find_element(By.NAME, list(fields.keys())[-1]).send_keys(Keys.ENTER)
-        
+
         self.driver.switch_to.window(main_window)
 
     def totvs_fav_clientes_va_para(self, cod_emitente):
@@ -154,29 +156,37 @@ class Web:
 
     def totvs_fav_notas_va_para(self, estabelecimento, serie, nf):
         self.totvs_va_para(w_cod_estabel=estabelecimento, w_serie=serie, w_nr_nota_fis=nf)
-    
+
     @retry
     def totvs_fav_clientes_documentos(self, cod_emitente):
         msg('Acessando "Documentos"')
 
         self.switch_to_frame("Fr_work")
-        WebDriverWait(self.driver, 30).until(expected_conditions.presence_of_element_located((By.XPATH, f'/html/body/form/div[1]/center/table/tbody/tr[2]/td/div[2]/center/table/tbody/tr[1]/td/input[@value="{cod_emitente}"]')))
+        xpath = f'/html/body/form/div[1]/center/table/tbody/tr[2]/td/div[2]/center/table/' \
+                f'tbody/tr[1]/td/input[@value="{cod_emitente}"] '
+        WebDriverWait(self.driver, 30).until(expected_conditions.presence_of_element_located((By.XPATH, xpath)))
         main_window = self.prepare_for_new_window()
-        self.driver.find_element(By.XPATH, "/html/body/form/div[1]/center/table/tbody/tr[2]/td/div[1]/center/table/tbody/tr/th[4]/a").click()
+        self.driver.find_element(By.XPATH,
+                                 "/html/body/form/div[1]/center/table/"
+                                 "tbody/tr[2]/td/div[1]/center/table/tbody/tr/th[4]/a").click()
         new_window = self.get_new_window()
 
         self.driver.switch_to.window(new_window)
 
         return main_window
-    
+
     @retry
     def totvs_fav_notas_items(self, nf):
         msg('Acessando "Documentos"')
 
         self.switch_to_frame("Fr_work")
-        WebDriverWait(self.driver, 30).until(expected_conditions.presence_of_element_located((By.XPATH, f'/html/body/form/div/center/table/tbody/tr/td/div/center/table/tbody/tr[2]/td/div/center/table/tbody/tr/td/div/center/table/tbody/tr[1]/td[1]/input[3][@value="{nf}"]')))
-        self.driver.find_element(By.XPATH, "/html/body/form/div/center/table/tbody/tr/td/div/center/table/tbody/tr[3]/td/div/center/table/tbody/tr/td[5]/a").click()
-    
+        xpath = f'/html/body/form/div/center/table/tbody/tr/td/div/center/table/tbody/tr[2]/td/div/center/table/' \
+                f'tbody/tr/td/div/center/table/tbody/tr[1]/td[1]/input[3][@value="{nf}"]'
+        WebDriverWait(self.driver, 30).until(expected_conditions.presence_of_element_located((By.XPATH, xpath)))
+        self.driver.find_element(By.XPATH,
+                                 "/html/body/form/div/center/table/tbody/tr/td/div/center/table/"
+                                 "tbody/tr[3]/td/div/center/table/tbody/tr/td[5]/a").click()
+
     @retry
     def totvs_fav_clientes_filtro(self):
         msg('Filtrando "Documentos"')
@@ -186,7 +196,8 @@ class Web:
         new_window = self.get_new_window()
 
         self.driver.switch_to.window(new_window)
-        WebDriverWait(self.driver, 30).until(expected_conditions.presence_of_element_located((By.NAME, "w_dt_venc_ini")))
+        WebDriverWait(self.driver, 30).until(
+            expected_conditions.presence_of_element_located((By.NAME, "w_dt_venc_ini")))
         el = self.driver.find_element(By.NAME, "w_dt_venc_ini")
         el.clear()
         el.send_keys("01/01/1996")
@@ -230,14 +241,16 @@ class Web:
         table = []
         for line in parsed_table:
             if type(expected_cols) == int:
-                _ = expected_cols
-                expected_cols = lambda l: len(l) == _
+                _e = expected_cols
+
+                def expected_cols(_l):
+                    return len(_l) == _e
             if not expected_cols(line):
                 raise Exception(f"Table has not the expected cols number at all lines")
             table.append([self.totvs_table_helper(col) for col in line])
 
         return table
-    
+
     @staticmethod
     def totvs_table_helper(col):
         r = (col.text or '').strip()
@@ -266,7 +279,7 @@ class Web:
             return True
         else:
             return False
-    
+
     def totvs_complete_table(self, tbody_xpath, expected_cols, img_css_selector):
         msg("Preparando para coletar todas as tabelas da consulta")
 
@@ -279,12 +292,16 @@ class Web:
 
     def totvs_fav_pedidos_complete_table(self):
         return self.totvs_complete_table("/html/body/form/table[3]/tbody", 17, "td:nth-child(2) > a:nth-child(1) > img")
-    
+
     def totvs_fav_clientes_complete_table(self):
-        return self.totvs_complete_table("/html/body/form/table[1]/tbody", 19, "body > form > table:nth-child(5) > tbody > tr > td > a > img")
-    
+        return self.totvs_complete_table("/html/body/form/table[1]/tbody", 19,
+                                         "body > form > table:nth-child(5) > tbody > tr > td > a > img")
+
     def totvs_fav_notas_complete_table(self):
-        return self.totvs_complete_table("/html/body/form/div/center/table/tbody/tr/td/div/center/table/tbody/tr[4]/td/div/center/table/tbody/tr[3]/td/div/center/table/tbody/tr/td/div/center/table[2]/tbody", lambda l: len(l) in (7, 13, 3), "anything")
+        return self.totvs_complete_table(
+            "/html/body/form/div/center/table/tbody/tr/td/div/center/table/tbody/tr[4]/td/div/center/table/"
+            "tbody/tr[3]/td/div/center/table/tbody/tr/td/div/center/table[2]/tbody",
+            lambda l: len(l) in (7, 13, 3), "anything")
 
 
 if __name__ == '__main__':

@@ -6,12 +6,12 @@ if __name__ == '__main__':
     sys_path.insert(0, local_resource_path(""))
 
 from utils import msg, global_path, scheduled, open
-from openpyxl.styles.colors import Color as xls_color
-from openpyxl.styles.fills import PatternFill as xls_pattern_fill
-from openpyxl.styles import Font as xls_font
-from openpyxl.styles.borders import Border as xls_border
-from openpyxl.styles.borders import Side as xls_side
-from openpyxl.styles.borders import BORDER_THIN as xls_border_thin
+from openpyxl.styles.colors import Color as XlsColor
+from openpyxl.styles.fills import PatternFill as XlsPatternFill
+from openpyxl.styles import Font as XlsFont
+from openpyxl.styles.borders import Border as XlsBorder
+from openpyxl.styles.borders import Side as XlsSide
+from openpyxl.styles.borders import BORDER_THIN as XLS_BORDER_THIN
 
 
 class Excel:
@@ -164,22 +164,22 @@ class Excel:
     def xls_color(cell, rgb):
         msg("Célula colorida")
 
-        cell.fill = xls_pattern_fill(patternType='solid', fgColor=xls_color(rgb=rgb))
+        cell.fill = XlsPatternFill(patternType='solid', fgColor=XlsColor(rgb=rgb))
     
     @staticmethod
     def xls_bold(cell):
         msg("Célula em negrito")
 
-        cell.font = xls_font(bold=True)
+        cell.font = XlsFont(bold=True)
     
     @staticmethod
     def xls_thin_border(cell):
         msg("Célula com todas as bordas finas")
-        cell.border = xls_border(
-            left=xls_side(border_style=xls_border_thin, color='00000000'),
-            right=xls_side(border_style=xls_border_thin, color='00000000'),
-            top=xls_side(border_style=xls_border_thin, color='00000000'),
-            bottom=xls_side(border_style=xls_border_thin, color='00000000')
+        cell.border = XlsBorder(
+            left=XlsSide(border_style=XLS_BORDER_THIN, color='00000000'),
+            right=XlsSide(border_style=XLS_BORDER_THIN, color='00000000'),
+            top=XlsSide(border_style=XLS_BORDER_THIN, color='00000000'),
+            bottom=XlsSide(border_style=XLS_BORDER_THIN, color='00000000')
         )
     
     @staticmethod

@@ -45,7 +45,9 @@ class RomaneioInicio(WebToExcelAction):
         nf_itens_end_at = -1
 
         nf_itens_dict = {line[1].strip()[:10]: line for line in nf_itens[nf_itens_start_at:nf_itens_end_at]}
-        descs = [re.match(r'(.*) *[A-Z]+ *$', line[desc_ind])[1] for line in nf_itens[nf_itens_start_at:nf_itens_end_at]]
+        descs = [
+            re.match(r'(.*) *[A-Z]+ *$', line[desc_ind])[1] for line in nf_itens[nf_itens_start_at:nf_itens_end_at]
+        ]
         desc = common_start(*descs).strip()
 
         table = []
@@ -57,8 +59,6 @@ class RomaneioInicio(WebToExcelAction):
             tam = line[tam_ind].strip()
             qtd = line[qtd_ind].strip()
             preco = nf_itens_dict[cod_ref][preco_ind].strip()
-            total = float(preco.replace('.', '').replace(',', '.')) * int(qtd.replace(',', ''))
-            total = f'{total:_.2f}'.replace('.', ',').replace('_', '.')
 
             table.append((cod, None, desc, cor, tam, qtd, preco))
         
