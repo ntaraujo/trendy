@@ -61,6 +61,8 @@ def total_progress(number=None):
     else:
         _total_progress += number
 
+    msg(f'Total de iterações esperadas: {_total_progress}')
+
 
 def _progress(amount):
     global _current_progress
