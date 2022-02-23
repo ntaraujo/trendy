@@ -62,17 +62,18 @@ def total_progress(number=None):
         _total_progress += number
 
 
-def progress(func=None):
-    def _progress():
-        global _current_progress
-        _current_progress += 1
-        print(f'Progresso: {_current_progress}/{_total_progress}')
+def _progress(amount):
+    global _current_progress
+    _current_progress += amount
+    print(f'Progresso: {_current_progress}/{_total_progress}')
 
+
+def progress(func=None, amount=1):
     def new_func(*args, **kwargs):
-        _progress()
+        _progress(amount)
         return func(*args, **kwargs)
 
-    return new_func if func else _progress()
+    return new_func if func else _progress(amount)
 
 
 debugger_active = getattr(sys, 'gettrace', lambda: None)() is not None
