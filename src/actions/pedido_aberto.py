@@ -8,7 +8,7 @@ if __name__ == '__main__':
     sys_path.insert(0, local_resource_path(""))
 
 from actions.base_action import BaseAction
-from utils import run_scheduled, app_dir_path, total_progress, progress, cache_dir_path
+from utils import run_scheduled, total_progress, progress, cache_dir_path
 from sortedcontainers import SortedDict
 import os
 
