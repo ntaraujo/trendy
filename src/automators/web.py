@@ -20,6 +20,7 @@ class Web:
         self.totvs_logged = False
         self.opened = False
         self.vars = {}
+        self.totvs_table_links = []
 
     def open(self):
         msg("Abrindo o navegador")
@@ -255,19 +256,29 @@ class Web:
     @retry
     def totvs_table(self, tbody_xpath, expected_cols):
         msg("Coletando uma tabela")
+        if type(expected_cols) == int:
+            _e = expected_cols
+
+            def expected_cols(_l):
+                return len(_l) == _e
 
         WebDriverWait(self.driver, 30).until(
             expected_conditions.element_to_be_clickable((By.XPATH, tbody_xpath)))
 
-        parsed_table = \
-            HTML(self.driver.find_element_by_xpath(tbody_xpath).get_attribute('innerHTML'))[0]
+        table_element = self.driver.find_element_by_xpath(tbody_xpath)
+
+        links_iter = iter(table_element.find_elements_by_xpath("tr/td/a[@href]"))
+
+        if self.totvs_table_links:
+            first_link = next(links_iter).get_attribute("href")
+            if first_link != self.totvs_table_links[-1]:
+                self.totvs_table_links.append(first_link)
+
+        self.totvs_table_links.extend(el.get_attribute("href") for el in links_iter)
+
+        parsed_table = HTML(table_element.get_attribute('innerHTML'))[0]
         table = []
         for line in parsed_table:
-            if type(expected_cols) == int:
-                _e = expected_cols
-
-                def expected_cols(_l):
-                    return len(_l) == _e
             if not expected_cols(line):
                 raise Exception(f"Table has not the expected cols number at all lines")
             table.append([self.totvs_table_helper(col) for col in line])
@@ -289,8 +300,8 @@ class Web:
         msg("Checando se há outra página")
 
         try:
-            element = self.driver.find_element(By.CSS_SELECTOR, img_css_selector)
-        except NoSuchElementException:
+            element = self.driver.find_elements(By.CSS_SELECTOR, img_css_selector)[-1]
+        except IndexError:
             return False
 
         if element.is_enabled() and element.get_attribute(
@@ -305,6 +316,8 @@ class Web:
 
     def totvs_complete_table(self, tbody_xpath, expected_cols, img_css_selector):
         msg("Preparando para coletar todas as tabelas da consulta")
+
+        self.totvs_table_links = []
 
         table = self.totvs_table(tbody_xpath, expected_cols)
         while self.totvs_next_page(img_css_selector):
@@ -328,6 +341,11 @@ class Web:
             "/html/body/form/div/center/table/tbody/tr/td/div/center/table/tbody/tr[4]/td/div/center/table/"
             "tbody/tr[3]/td/div/center/table/tbody/tr/td/div/center/table[2]/tbody",
             lambda l: len(l) in (7, 13, 3), "anything")
+
+    def totvs_fav_notas1_complete_table(self):
+        return self.totvs_complete_table("/html/body/form[2]/center/table[2]/tbody", 13, 
+        "body > form:nth-child(6) > center > table:nth-child(3) > tbody > tr > td > a > img")
+        # body > form:nth-child(6) > center > table:nth-child(3) > tbody > tr > td:nth-child(2) > a > img
 
 
 if __name__ == '__main__':
