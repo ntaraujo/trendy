@@ -120,6 +120,10 @@ def main():
     argument(pedido_aberto_basic_group, 'dinamica', widget='FileChooser',
              help='A dinâmica é o arquivo com os códigos e nomes de cada cliente')
 
+    virgulas_parser = sub_parser('Vírgulas')
+    argument(virgulas_parser, '--texto', widget='Textarea', gooey_options={'height': 100},
+             help="Texto com valores separados por ENTER, serão separados por vírgulas após essa ação")
+
     opcoes_parser = sub_parser('Opções')
 
     opcoes_group = opcoes_parser.add_mutually_exclusive_group(required=True)
@@ -172,6 +176,9 @@ def main():
     elif args.action == 'PedidoAberto':
         from actions.pedido_aberto import PedidoAberto
         run(PedidoAberto)
+    elif args.action == 'Vírgulas':
+        from actions.virgulas import Virgulas
+        run(Virgulas)
     elif args.action == 'Opções':
         from actions.opcoes import Opcoes
         run(Opcoes)
