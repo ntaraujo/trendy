@@ -5,7 +5,7 @@ if __name__ == '__main__':
 
     sys_path.insert(0, local_resource_path(""))
 
-from utils import msg, global_path, scheduled, open
+from utils import msg, global_path, progress, scheduled, open, total_progress
 from openpyxl.styles.colors import Color as XlsColor
 from openpyxl.styles.fills import PatternFill as XlsPatternFill
 from openpyxl.styles import Font as XlsFont
@@ -132,16 +132,18 @@ class Excel:
         self.file.save(file_path)
 
     @staticmethod
-    def xls_file_vertical_search(value, file_or_path, lookup_col, *return_cols):
+    def xls_file_vertical_search(value, sheet_or_path, lookup_col, *return_cols):
         msg(f'Procurando "{value}"')
 
-        if type(file_or_path) == str:
+        if type(sheet_or_path) == str:
             from openpyxl import load_workbook
 
-            ws = load_workbook(file_or_path).active
+            ws = load_workbook(sheet_or_path).active
+            total_progress(ws.max_row)
         else:
-            ws = file_or_path
+            ws = sheet_or_path
         for row in ws.values:
+            progress()
             if row is None:
                 return
             if value in (row[lookup_col - 1] or ''):
