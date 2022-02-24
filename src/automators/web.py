@@ -230,6 +230,29 @@ class Web:
         self.wait_disappear(By.ID, "janelaTudo")
 
     @retry
+    def totvs_fav_notas1_fill(self, cod_cliente, cod_produtos):
+        msg("Preenchendo os dados necessários")
+
+        WebDriverWait(self.driver, 30).until(expected_conditions.element_to_be_clickable((By.NAME, "w_cod_cliente")))
+        self.driver.find_element(By.NAME, "w_cod_cliente").clear()
+        self.driver.find_element(By.NAME, "w_cod_cliente").send_keys(cod_cliente)
+        self.driver.find_element(By.NAME, "w_cod_estabel_fim").clear()
+        self.driver.find_element(By.NAME, "w_cod_estabel_fim").send_keys("60")
+        self.driver.find_element(By.NAME, "w_serie").clear()
+        self.driver.find_element(By.NAME, "w_serie").send_keys("11")
+        self.driver.find_element(By.NAME, "w_canal_vendas").clear()
+        self.driver.find_element(By.NAME, "w_canal_vendas").send_keys("700")
+        self.driver.find_element(By.NAME, "w_dt_emissao_ini").clear()
+        self.driver.find_element(By.NAME, "w_dt_emissao_ini").send_keys("01/01/1999")
+        self.driver.find_element(By.NAME, "w_dt_emissao_fim").clear()
+        self.driver.find_element(By.NAME, "w_dt_emissao_fim").send_keys("31/12/2999")
+        self.driver.find_element(By.NAME, "w_cod_produtos").clear()
+        self.driver.find_element(By.NAME, "w_cod_produtos").send_keys(cod_produtos)
+        self.driver.find_element(By.NAME, "imagesearch").click()
+
+        self.wait_disappear(By.ID, "janelaTudo")
+
+    @retry
     def totvs_table(self, tbody_xpath, expected_cols):
         msg("Coletando uma tabela")
 
@@ -287,7 +310,10 @@ class Web:
         while self.totvs_next_page(img_css_selector):
             partial_table = self.totvs_table(tbody_xpath, expected_cols)
             if len(partial_table) > 1:
-                table += partial_table[1:]
+                if len(partial_table) > 2 and partial_table[1] == table[-1]:
+                    table += partial_table[2:]
+                else:
+                    table += partial_table[1:]
         return table
 
     def totvs_fav_pedidos_complete_table(self):
