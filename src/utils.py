@@ -311,6 +311,7 @@ class ExampleArgs:
     romaneio_inicio = '/Users/macbookpro/Desktop/dev/trendy/examples/romaneio-inicio.xls'
     arquivo_oc = '/Users/macbookpro/Desktop/dev/trendy/examples/arquivo-oc.csv'
     arquivo_wgpd513 = '/Users/macbookpro/Desktop/dev/trendy/examples/wgpd513.xlsx'
+    arquivo_devolucao = '/Users/macbookpro/Desktop/dev/trendy/examples/devolucao.xlsx'
     abrir_pasta = True
     limpar_cache = True
     limpar_dados = True
