@@ -199,13 +199,28 @@ class EspelhoDevolucao(WebToExcelAction):
         self.excel.open_app()
         self.excel.open(global_path("resources/espelho.xlsx"))
 
-        self.excel.assign('A9', descs)
-        self.excel.assign('B9', cod_produtos)
-        self.excel.assign('C9', qtds)
-        self.excel.assign('D9', vl_units)
-        self.excel.assign('F9', nfs)
-        self.excel.assign('I9', fabricas)
-        self.excel.assign('J9', obss)
+        fabrica21row = 8
+        fabrica20row = 100
+        fabrica24row = 180
+
+        for desc, cod_produto, qtd, vl_unit, nf, fabrica, obs in zip(descs, cod_produtos, qtds, vl_units, nfs, fabricas, obss):
+            if "21" in fabrica:
+                fabrica21row += 1
+                fabrica_row = fabrica21row
+            if "20" in fabrica:
+                fabrica20row += 1
+                fabrica_row = fabrica20row
+            if "24" in fabrica:
+                fabrica24row += 1
+                fabrica_row = fabrica24row
+
+            self.excel.assign(f'A{fabrica_row}', desc)
+            self.excel.assign(f'B{fabrica_row}', cod_produto)
+            self.excel.assign(f'C{fabrica_row}', qtd)
+            self.excel.assign(f'D{fabrica_row}', vl_unit)
+            self.excel.assign(f'F{fabrica_row}', nf)
+            self.excel.assign(f'I{fabrica_row}', fabrica)
+            self.excel.assign(f'J{fabrica_row}', obs)
 
         run_scheduled()
 
