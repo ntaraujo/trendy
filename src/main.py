@@ -120,6 +120,15 @@ def main():
     argument(pedido_aberto_basic_group, 'dinamica', widget='FileChooser',
              help='A dinâmica é o arquivo com os códigos e nomes de cada cliente')
 
+    espelho_devolucao_parser = sub_parser('EspelhoDevolução')
+
+    espelho_devolucao_basic_group = group(espelho_devolucao_parser, 'Básico', gooey_options={'columns': 1})
+    argument(espelho_devolucao_basic_group, 'arquivo_devolucao', widget='FileChooser',
+             help='Arquivo do Excel com os códigos dos produtos, nomes dos modelos, quantidades em pares e descrições dos defeitos')
+    argument(espelho_devolucao_basic_group, 'dinamica', widget='FileChooser',
+             help='A dinâmica é o arquivo com os códigos e nomes de cada cliente')
+    argument(espelho_devolucao_basic_group, 'senha_totvs', widget='PasswordField', help="A senha de acesso ao TOTVS")
+
     virgulas_parser = sub_parser('Vírgulas')
     argument(virgulas_parser, '--texto', widget='Textarea', gooey_options={'height': 100},
              help="Texto com valores separados por ENTER, serão separados por vírgulas após essa ação")
@@ -176,6 +185,9 @@ def main():
     elif args.action == 'PedidoAberto':
         from actions.pedido_aberto import PedidoAberto
         run(PedidoAberto)
+    elif args.action == 'EspelhoDevolução':
+        from actions.espelho_devolucao import EspelhoDevolucao
+        run(EspelhoDevolucao)
     elif args.action == 'Vírgulas':
         from actions.virgulas import Virgulas
         run(Virgulas)
