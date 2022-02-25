@@ -72,16 +72,11 @@ class EspelhoDevolucao(WebToExcelAction):
         fabricas = []
         obss = []
 
-        __test = False
-
         for row in arquivo_iter:
             progress()
 
-            if __test or not row or not row[0] or not row[2]:
+            if not row or not row[0] or not row[2]:
                 break
-
-            if str(row[0]).strip().startswith("34"):
-                __test = True
 
             cod_produtos.append(str(row[0]).strip())
             qtds.append(str(row[2]).strip())
