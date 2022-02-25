@@ -1,5 +1,5 @@
 # debug helper for vscode
-import os; os.chdir('/Users/macbookpro/Desktop/dev/trendy/src')
+# import os; os.chdir('/Users/macbookpro/Desktop/dev/trendy/src')
 
 if __name__ == '__main__':
     from gooey import local_resource_path
