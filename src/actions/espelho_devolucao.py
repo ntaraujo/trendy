@@ -153,7 +153,7 @@ class EspelhoDevolucao(WebToExcelAction):
                     best_dict_date = dt_entrada
                     best_dict_index = index
                 dt_saida = totvs_dict['dt_saida']
-                if dt_saida and dt_entrada > latest_saida_dict_date:
+                if dt_saida and dt_saida > latest_saida_dict_date:
                     latest_saida_dict_date = dt_saida
                     latest_saida_dict_index = index
             
