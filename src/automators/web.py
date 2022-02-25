@@ -252,6 +252,13 @@ class Web:
         self.driver.find_element(By.NAME, "imagesearch").click()
 
         self.wait_disappear(By.ID, "janelaTudo")
+    
+    @retry
+    def totvs_fav_notas2_itens_table(self):
+        WebDriverWait(self.driver, 30).until(expected_conditions.element_to_be_clickable((By.XPATH, "/html/body/form/div/center/table/tbody/tr/td/div/center/table/tbody/tr[3]/td/div/center/table/tbody/tr/td[5]/a")))
+        self.driver.find_element(By.XPATH, "/html/body/form/div/center/table/tbody/tr/td/div/center/table/tbody/tr[3]/td/div/center/table/tbody/tr/td[5]/a").click()
+
+        return self.totvs_table("/html/body/form/div/center/table/tbody/tr/td/div/center/table/tbody/tr[4]/td/div/center/table/tbody/tr[3]/td/div/center/table/tbody/tr/td/div/center/table[2]/tbody", lambda l: len(l) in (13, 7, 3))
 
     @retry
     def totvs_table(self, tbody_xpath, expected_cols):
@@ -267,9 +274,10 @@ class Web:
 
         table_element = self.driver.find_element_by_xpath(tbody_xpath)
 
-        links_iter = iter(table_element.find_elements_by_xpath("tr/td/a[@href]"))
+        links = table_element.find_elements_by_xpath("tr/td/a[@href]")
+        links_iter = iter(links)
 
-        if self.totvs_table_links:
+        if self.totvs_table_links and links:
             first_link = next(links_iter).get_attribute("href")
             if first_link != self.totvs_table_links[-1]:
                 self.totvs_table_links.append(first_link)
